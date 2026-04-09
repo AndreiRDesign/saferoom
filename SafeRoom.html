@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Safe Room</title>
+
+<link rel="stylesheet" href="https://use.typekit.net/gsu8slg.css">
+<style>
+    font-family: owners, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    font-family: "chauncy-pro", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+</style>    
+<link rel="stylesheet" href="SafeRoom.css">
+</head>
+<body>
+
+<div id="app">
+  <!-- ══ SAFE ROOM PAGE ══ -->
+  <div id="page-room" class="page active">
+
+
+    <!-- ── INVENTORY TRIGGER ── -->
+<button id="inv-trigger">
+  <img src="img/cardboard-box.png" alt="inventory" />
+</button>
+
+<!-- ── DIY WORKSHOP TRIGGER ── -->
+<button id="diy-trigger">
+  <img src="img/diy-button.png" alt="DIY Workshop" />
+</button>
+
+<div id="thesis-credit">
+    Andrei Rodriguez<br>2026 Thesis
+  <img src="img/AR-logo.png" alt="logo" id="thesis-logo" />
+</div>
+
+<!-- ── DIY WORKSHOP MODAL ── -->
+<div id="diy-modal">
+  <div id="diy-box">
+
+<div id="diy-header">
+  <div id="diy-header-text">
+    <div id="diy-title">DIY Workshop</div>
+    <div id="diy-subtitle">Draw your own furniture and décor — pieces that are special and meaningful to you!</div>
+  </div>
+  <button id="diy-close">✕</button>
+</div>
+
+    <div id="diy-body">
+
+      <!-- Left: drawing canvas -->
+      <div id="diy-canvas-wrap">
+        <canvas id="diy-canvas" width="400" height="400"></canvas>
+        <div id="diy-canvas-hint">Draw Here</div>
+      </div>
+
+      <!-- Right: tools + saved pieces -->
+      <div id="diy-sidebar">
+
+              <!-- Tools -->
+      <div class="diy-section-label">Colour</div>
+      <div id="diy-tools">
+        <div class="diy-tool active" data-tool="pen" title="Black"></div>
+        <div class="diy-tool" data-tool="white" title="White"></div>
+        <div class="diy-tool" data-tool="eraser" title="Eraser">erase</div>
+      </div>
+
+        <!-- Brush size -->
+        <div class="diy-section-label" style="margin-top:16px">Size</div>
+        <input id="diy-brush-size" type="range" min="1" max="24" value="3" />
+
+        <!-- Actions -->
+        <div id="diy-actions">
+          <button id="diy-clear">Clear</button>
+          <button id="diy-save">Add to Room</button>
+        </div>
+
+        <!-- Saved drawings -->
+        <div class="diy-section-label" style="margin-top:20px">
+          Saved pieces
+          <span id="diy-slots-info"></span>
+        </div>
+        <div id="diy-saved-list"></div>
+
+        <!-- Locked slots -->
+        <div id="diy-locked-slots"></div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+    <!-- ── TOP INVENTORY ── -->
+  <div id="top-inventory">
+    <div id="inv-header">
+      <!-- Category tabs -->
+      <div id="inv-tabs">
+        <span class="inv-tab active" data-cat="seating">Seating</span>
+        <span class="inv-sep">/</span>
+        <span class="inv-tab" data-cat="tables">Tables</span>
+        <span class="inv-sep">/</span>
+        <span class="inv-tab" data-cat="lighting">Lighting</span>
+        <span class="inv-sep">/</span>
+        <span class="inv-tab" data-cat="plants">Plants</span>
+        <span class="inv-sep">/</span>
+        <span class="inv-tab" data-cat="decor">Décor</span>
+        <span class="inv-sep">/</span>
+        <span class="inv-tab" data-cat="pets">Pets</span>
+      </div>
+      <div id="inv-title">Furniture</div>
+      <!-- Unlock counter -->
+      <div id="inv-unlock-counter"></div>
+    </div>
+    <!-- Furniture shelf -->
+    <div id="inv-shelf">
+        <button id="inv-arrow-left" class="inv-arrow">‹</button>
+        <div id="inventory-items"></div>
+        <button id="inv-arrow-right" class="inv-arrow">›</button>
+    </div>
+  </div>
+    <!-- ── ROOM VIEWPORT ── -->
+    <div id="room-viewport">
+           <div id="room-footer">
+              <div id="footer-room-name"></div>
+              <div id="footer-logo">
+                <img src="img/SR-logo.png" width="100px" />
+              </div>
+              <div id="footer-entry-counter">
+                 <span id="footer-entry-count"></span>
+                  <button id="reset-tutorial-btn"><em>Help</em> ⓘ</button> 
+
+              </div>
+          </div>
+    <div id="room-scene">
+ 
+
+      <!-- Left door -->
+<div class="door-wrapper left" id="door-left">
+  <img class="door-closed" src="img/door-closed-left.png" />
+  <img class="door-open"   src="img/door-open-left.png" />
+</div>
+
+      <!-- Right door -->
+<div class="door-wrapper right" id="door-right">
+  <img class="door-closed" src="img/door-closed-right.png" />
+  <img class="door-open"   src="img/door-open-right.png" />
+</div>
+
+      <!-- Furniture canvas -->
+      <div id="furniture-canvas"></div>
+
+
+
+  </div>
+
+    </div>
+
+
+  </div>
+
+  <!-- ══ CULTURE ROOM PAGE ══ -->
+  <div id="page-culture" class="page">
+    <div id="culture-header">
+      <button id="culture-back-btn" class="culture-header-btn">← SafeRoom</button>
+      <span id="culture-name-display"></span>
+      <button id="culture-rename-btn">edit</button>
+              <div id="rename-modal" class="rename-overlay">
+                <div class="rename-box" onclick="event.stopPropagation()">
+                  <div class="rename-title">Rename</div>
+                  <input id="rename-input" class="rename-input" placeholder="Enter a name..." maxlength="28" />
+                  <div class="rename-footer">
+                    <button class="rename-cancel" onclick="closeRenameModal()">Cancel</button>
+                    <button id="rename-save-btn" class="rename-save" onclick="saveRename()">Save</button>
+                  </div>
+                </div>
+              </div>
+      <span id="culture-bubble-count">0 bubbles</span>
+    </div>
+    <div id="culture-canvas">
+      <div id="culture-aura"></div>
+      <div id="culture-center-label"></div>
+      <div id="culture-bubbles-container"></div>
+      <div id="culture-add-btn-wrap">
+        <div id="topic-dropdown">
+          <div class="drop-label">Choose a topic</div>
+          <div id="topic-options"></div>
+        </div>
+        <button id="culture-add-btn">+</button>
+      </div>
+         <div id="culture-empty-hint" style="display:none">
+        <p>Press <strong>+</strong> below to add a thought</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ MODALS ══ -->
+<!-- Entry modal -->
+<div id="entry-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box" style="width:560px;max-width:93vw" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-icon-circle" id="entry-modal-icon"></div>
+      <div class="modal-title-block">
+        <div class="modal-title" id="entry-modal-title"></div>
+        <div class="modal-sub" id="entry-modal-sub"></div>
+      </div>
+      <button class="modal-close" id="entry-modal-close">✕</button>
+    </div>
+    <div class="modal-divider" id="entry-modal-divider"></div>
+    <label class="field-label">Title</label>
+    <input id="entry-title" class="field-input title-input" placeholder="Give this entry a name…" />
+    <label class="field-label">Date</label>
+    <input id="entry-date" type="date" class="field-input" />
+    <label class="field-label">Entry</label>
+    <textarea id="entry-text" class="field-input" placeholder=""></textarea>
+    <div class="modal-footer">
+      <span class="modal-char-count" id="entry-char-count">Write freely — no rules</span>
+      <button class="save-btn" id="entry-save-btn" disabled>Save entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- View modal -->
+<div id="view-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box view-modal-box" onclick="event.stopPropagation()">
+    <div class="view-topic-tag">
+      <span id="view-topic-icon"></span>
+      <span class="view-topic-label" id="view-topic-label"></span>
+      <button class="modal-close" id="view-modal-close" style="margin-left:auto">✕</button>
+    </div>
+    <div class="view-title" id="view-title"></div>
+    <div class="view-date" id="view-date"></div>
+    <div class="modal-divider" id="view-divider"></div>
+    <div class="view-text" id="view-text"></div>
+    <div class="view-footer">
+      <button class="delete-btn" id="view-delete-btn">Delete entry</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Unlock toast -->
+<div id="unlock-toast">✶<span id="toast-text"></span>✶</div>
+
+<!-- ══ TUTORIAL OVERLAY ══ -->
+<div id="tutorial-overlay">
+  <div id="tutorial-backdrop"></div>
+  <div id="tutorial-box">
+    <div id="tutorial-text"></div>
+    <button id="tutorial-next">click to continue</button>
+  </div>
+</div>
+
+<!-- Highlight ring that follows the target element -->
+<div id="tutorial-highlight"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════════
+
+const FURNITURE_SETS = {
+  "blue-yellow": [
+// decor(blue-yellow) ═══════════
+    // rugs(blue-yellow) ═══════════
+    { id:"B-Yrug1",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-Y/rugs/B-Yrug1.png" },
+    { id:"B-Yrug2",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-Y/rugs/B-Yrug2.png" },
+    { id:"B-Yrug3",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-Y/rugs/B-Yrug3.png" },
+    { id:"B-Yrug4",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-Y/rugs/B-Yrug4.png" },
+    { id:"B-Yrug5",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-Y/rugs/B-Yrug5.png" },
+    // miscallaneous(blue-yellow) ═══════════
+    { id:"B-Rdecor1",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:250, src:"B-Y/decor/B-Yguitar.png" },
+    { id:"B-Rdecor5",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:80, src:"img/illus/radio+cd.png" },
+    { id:"B-Rdecor2",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"B-Y/decor/B-Ymug1.png" },
+    { id:"B-Rdecor6",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/teapot.png" },    
+    { id:"B-Rdecor3",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"B-Y/decor/B-Ymug2.png" },
+    { id:"B-Rdecor7",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/coffeepot.png" },
+    { id:"B-Rdecor4",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:170, src:"B-Y/decor/B-Yglobe.png" },
+    { id:"B-Rdecor8",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:100, src:"img/illus/Rplayer.png" },
+               // frame(blue-yellow) ═══════════
+    { id:"B-Yframe1",   cat:"decor",  unlockAt:29,  defaultW:130, defaultH:130, src:"B-Y/decor/frame/frame1.png" },
+    { id:"B-Yframe2",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-Y/decor/frame/frame2.png" },
+    { id:"B-Yframe3",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"B-Y/decor/frame/frame3.png" },
+    { id:"B-Yframe4",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-Y/decor/frame/frame4.png" },
+    { id:"B-Yframe5",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"B-Y/decor/frame/frame5.png" },
+    { id:"B-Yframe6",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-Y/decor/frame/frame6.png" },  
+        // plushie(blue-yellow) ═══════════
+    { id:"B-Yplushie1",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-Y/decor/plushie/bunny.png" },
+    { id:"B-Yplushie2",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-Y/decor/plushie/dino.png" },
+    { id:"B-Yplushie3",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-Y/decor/plushie/bear.png" },
+    { id:"B-Yplushie4",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-Y/decor/plushie/monkey.png" },
+    { id:"B-Yplushie5",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-Y/decor/plushie/panda.png" },
+    { id:"B-Yplushie6",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-Y/decor/plushie/penguin.png" },
+    { id:"B-Yplushie7",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-Y/decor/plushie/tiger.png" },
+    { id:"B-Yplushie8",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-Y/decor/plushie/elephant.png" },
+    { id:"B-Yplushie9",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-Y/decor/plushie/giraffe.png" },  
+// Chair(blue-yellow) ═══════════
+    { id:"B-Ychair1",   cat:"seating",  unlockAt:7, defaultW:200,  defaultH:300, src:"B-Y/sit/B-Ychair1.png" },
+    { id:"chair1",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:240, src:"img/illus/chair1.png" },
+    { id:"B-Ychair2",   cat:"seating",  unlockAt:7, defaultW:300, defaultH:200, src:"B-Y/sit/B-Ychair2.png" },
+    { id:"B-Ychair3",   cat:"seating",  unlockAt:7, defaultW:200, defaultH:250, src:"B-Y/sit/B-Ychair3.png" },
+    { id:"chair2",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:260, src:"img/illus/chair2.png" },
+    { id:"B-Ychair4",   cat:"seating",  unlockAt:7, defaultW:300,  defaultH:200,  src:"B-Y/sit/B-Ychair4.png" },
+    { id:"B-Ychair5",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-Y/sit/B-Ychair5.png" },
+    { id:"chair3",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair3.png" },
+    { id:"B-Ychair6",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-Y/sit/B-Ychair6.png" },
+    { id:"B-Ychair7",   cat:"seating",  unlockAt:11, defaultW:200, defaultH:250,  src:"B-Y/sit/B-Ychair7.png" }, 
+    { id:"chair4",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair4.png" },
+    { id:"B-Ychair8",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-Y/sit/B-Ychair8.png" },
+// Table(blue-yellow) ═══════════ 
+    { id:"B-Ytable1",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120, src:"B-Y/table/B-Ytable1.png" },
+    { id:"B-Ytable2",   cat:"tables",   unlockAt:13, defaultW:230, defaultH:200, src:"B-Y/table/B-Ytable2.png" },
+    { id:"table2",      cat:"tables",   unlockAt:13, defaultW:300,  defaultH:130, src:"img/illus/table2.png" },
+    { id:"B-Ytable3",   cat:"tables",   unlockAt:13, defaultW:250, defaultH:200, src:"B-Y/table/B-Ytable3.png" },
+    { id:"B-Ytable4",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120,  src:"B-Y/table/B-Ytable4.png" },
+    { id:"table3",      cat:"tables",   unlockAt:13, defaultW:200,  defaultH:200, src:"img/illus/table3.png" },
+    { id:"B-Ytable5",   cat:"tables",   unlockAt:17, defaultW:300, defaultH:200,  src:"B-Y/table/B-Ytable5.png" },
+    { id:"table4",      cat:"tables",   unlockAt:17, defaultW:110,  defaultH:180, src:"img/illus/table4.png" },
+    { id:"B-Ytable6",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"B-Y/table/B-Ytable6.png" },
+    { id:"B-Ytable7",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"B-Y/table/B-Ytable7.png" },
+    { id:"table1",      cat:"tables",   unlockAt:17, defaultW:200,  defaultH:180, src:"img/illus/table1.png" },
+    { id:"B-Ytable8",   cat:"tables",   unlockAt:17, defaultW:110, defaultH:180,  src:"B-Y/table/B-Ytable8.png" },
+// lighting(blue-YELLOW) ═══════════ 
+    { id:"B-Ylight1",   cat:"lighting",   unlockAt:19, defaultW:150,  defaultH:150, src:"B-Y/decor/lighting/B-Ylamp1.png" },
+    { id:"light1",      cat:"lighting",   unlockAt:19, defaultW:120,  defaultH:150, src:"img/illus/lamp1.png" },
+    { id:"B-Ylight2",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"B-Y/decor/lighting/B-Ylamp2.png" },
+    { id:"B-Ylight3",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"B-Y/decor/lighting/B-Ylamp3.png" },
+    { id:"B-Ylight4",   cat:"lighting",   unlockAt:19, defaultW:100,  defaultH:150, src:"B-Y/decor/lighting/B-Ylamp4.png" },
+    { id:"light3",      cat:"lighting",   unlockAt:23, defaultW:100,  defaultH:300, src:"img/illus/lamp3.png" },
+    { id:"B-Ylight5",   cat:"lighting",   unlockAt:23, defaultW:170,  defaultH:300, src:"B-Y/decor/lighting/B-Ylamp5.png" },
+    { id:"B-Ylight6",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:200, src:"B-Y/decor/lighting/B-Ylamp6.png" },
+    { id:"light2",      cat:"lighting",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/lamp2.png" },    
+    { id:"B-Ylight7",   cat:"lighting",   unlockAt:23, defaultW:140,  defaultH:180, src:"B-Y/decor/lighting/B-Ylamp7.png" },
+    { id:"B-Ylight8",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:300, src:"B-Y/decor/lighting/B-Ylamp8.png" },
+// plant(blue-YELLOW) ═══════════ 
+    { id:"B-Yplant1",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"B-Y/decor/plant/B-Yplant1.png" },
+    { id:"plant1",      cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"img/illus/plant1.png" },
+    { id:"B-Yplant2",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"B-Y/decor/plant/B-Yplant2.png" },
+    { id:"B-Yplant3",   cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"B-Y/decor/plant/B-Yplant3.png" }, 
+    { id:"plant2",      cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"img/illus/plant2.png" },
+    { id:"B-Yplant4",   cat:"plants",   unlockAt:19, defaultW:160,  defaultH:230, src:"B-Y/decor/plant/B-Yplant4.png" },
+    { id:"plant3",      cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"img/illus/plant3.png" },
+    { id:"B-Yplant5",   cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"B-Y/decor/plant/B-Yplant5.png" },
+    { id:"B-Yplant6",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-Y/decor/plant/B-Yplant6.png" }, 
+    { id:"plant4",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant4.png" },
+    { id:"B-Yplant7",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-Y/decor/plant/B-Yplant7.png" },
+    { id:"plant5",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant5.png" },
+    { id:"B-Yplant8",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-Y/decor/plant/B-Yplant8.png" },
+// pets(blue-yellow) ═══════════ 
+    { id:"B-Ypet1",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:240, src:"B-Y/pets/B-Ycat1.png" },
+    { id:"B-Ypet2",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:300, src:"B-Y/pets/B-Ycat2.png" },            
+    { id:"B-Ypet3",   cat:"pets",   unlockAt:36, defaultW:150,  defaultH:170, src:"B-Y/pets/B-Yfish1.png" },
+    { id:"B-Ypet4",   cat:"pets",   unlockAt:36, defaultW:120,  defaultH:120, src:"B-Y/pets/B-Yfish2.png" },
+    { id:"B-Ypet5",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"B-Y/pets/B-Yhamster.png" }, 
+    { id:"B-Ypet6",   cat:"pets",   unlockAt:36, defaultW:170,  defaultH:170, src:"B-Y/pets/B-Yguinea.png" }, 
+    { id:"B-Ypet7",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"B-Y/pets/B-Ydog1.png" },
+    { id:"B-Ypet8",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"B-Y/pets/B-Ydog2.png" },
+    { id:"B-Ypet9",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"B-Y/pets/B-Ydog3.png" },     
+
+ 
+  ],
+  "blue-red": [
+   // decor(blue-red) ═══════════
+    // rugs(blue-red) ═══════════
+    { id:"B-Rrug1",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-R/rugs/B-Rrug1.png" },
+    { id:"B-Rrug2",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-R/rugs/B-Rrug2.png" },
+    { id:"B-Rrug3",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-R/rugs/B-Rrug3.png" },
+    { id:"B-Rrug4",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-R/rugs/B-Rrug4.png" },
+    { id:"B-Rrug5",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-R/rugs/B-Rrug5.png" },
+    // miscallaneous(blue-red) ═══════════
+    { id:"B-Rdecor1",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:250, src:"B-R/decor/B-Rguitar.png" },
+    { id:"B-Rdecor5",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:80, src:"img/illus/radio+cd.png" },
+    { id:"B-Rdecor2",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"B-R/decor/B-Rmug1.png" },
+    { id:"B-Rdecor6",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/teapot.png" },    
+    { id:"B-Rdecor3",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"B-R/decor/B-Rmug2.png" },
+    { id:"B-Rdecor7",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/coffeepot.png" },
+    { id:"B-Rdecor4",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:170, src:"B-R/decor/B-Rglobe.png" },
+    { id:"B-Rdecor8",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:100, src:"img/illus/Rplayer.png" },
+           // frame(blue-red) ═══════════
+    { id:"B-Rframe1",   cat:"decor",  unlockAt:29,  defaultW:130, defaultH:130, src:"B-R/decor/frame/frame1.png" },
+    { id:"B-Rframe2",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-R/decor/frame/frame2.png" },
+    { id:"B-Rframe3",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"B-R/decor/frame/frame3.png" },
+    { id:"B-Rframe4",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-R/decor/frame/frame4.png" },
+    { id:"B-Rframe5",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"B-R/decor/frame/frame5.png" },
+    { id:"B-Rframe6",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-R/decor/frame/frame6.png" },  
+        // plushie(blue-red) ═══════════
+    { id:"B-Rplushie1",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-R/decor/plushie/bunny.png" },
+    { id:"B-Rplushie2",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-R/decor/plushie/dino.png" },
+    { id:"B-Rplushie3",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-R/decor/plushie/bear.png" },
+    { id:"B-Rplushie4",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-R/decor/plushie/monkey.png" },
+    { id:"B-Rplushie5",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-R/decor/plushie/panda.png" },
+    { id:"B-Rplushie6",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-R/decor/plushie/penguin.png" },
+    { id:"B-Rplushie7",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-R/decor/plushie/tiger.png" },
+    { id:"B-Rplushie8",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-R/decor/plushie/elephant.png" },
+    { id:"B-Rplushie9",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-R/decor/plushie/giraffe.png" },  
+// Chair(blue-red) ═══════════
+    { id:"B-Rchair1",   cat:"seating",  unlockAt:7, defaultW:200,  defaultH:300, src:"B-R/sit/B-Rchair1.png" },
+    { id:"chair1",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:240, src:"img/illus/chair1.png" },
+    { id:"B-Rchair2",   cat:"seating",  unlockAt:7, defaultW:300, defaultH:200, src:"B-R/sit/B-Rchair2.png" },
+    { id:"B-Rchair3",   cat:"seating",  unlockAt:7, defaultW:200, defaultH:250, src:"B-R/sit/B-Rchair3.png" },
+    { id:"chair2",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:260, src:"img/illus/chair2.png" },
+    { id:"B-Rchair4",   cat:"seating",  unlockAt:7, defaultW:300,  defaultH:200,  src:"B-R/sit/B-Rchair4.png" },
+    { id:"B-Rchair5",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-R/sit/B-Rchair5.png" },
+    { id:"chair3",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair3.png" },
+    { id:"B-Rchair6",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-R/sit/B-Rchair6.png" },
+    { id:"B-Rchair7",   cat:"seating",  unlockAt:11, defaultW:200, defaultH:250,  src:"B-R/sit/B-Rchair7.png" }, 
+    { id:"chair4",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair4.png" },
+    { id:"B-Rchair8",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-R/sit/B-Rchair8.png" },
+// Table(blue-red) ═══════════ 
+    { id:"B-Rtable1",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120, src:"B-R/table/B-Rtable1.png" },
+    { id:"B-Rtable2",   cat:"tables",   unlockAt:13, defaultW:230, defaultH:200, src:"B-R/table/B-Rtable2.png" },
+    { id:"table2",      cat:"tables",   unlockAt:13, defaultW:300,  defaultH:130, src:"img/illus/table2.png" },
+    { id:"B-Rtable3",   cat:"tables",   unlockAt:13, defaultW:250, defaultH:200, src:"B-R/table/B-Rtable3.png" },
+    { id:"B-Rtable4",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120,  src:"B-R/table/B-Rtable4.png" },
+    { id:"table3",      cat:"tables",   unlockAt:13, defaultW:200,  defaultH:200, src:"img/illus/table3.png" },
+    { id:"B-Rtable5",   cat:"tables",   unlockAt:17, defaultW:300, defaultH:200,  src:"B-R/table/B-Rtable5.png" },
+    { id:"table4",      cat:"tables",   unlockAt:17, defaultW:110,  defaultH:180, src:"img/illus/table4.png" },
+    { id:"B-Rtable6",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"B-R/table/B-Rtable6.png" },
+    { id:"B-Rtable7",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"B-R/table/B-Rtable7.png" },
+    { id:"table1",      cat:"tables",   unlockAt:17, defaultW:200,  defaultH:180, src:"img/illus/table1.png" },
+    { id:"B-Rtable8",   cat:"tables",   unlockAt:17, defaultW:110, defaultH:180,  src:"B-R/table/B-Rtable8.png" },
+// lighting(blue-red) ═══════════ 
+    { id:"B-Rlight1",   cat:"lighting",   unlockAt:19, defaultW:150,  defaultH:150, src:"B-R/decor/lighting/B-Rlamp1.png" },
+    { id:"light1",      cat:"lighting",   unlockAt:19, defaultW:120,  defaultH:150, src:"img/illus/lamp1.png" },
+    { id:"B-Rlight2",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"B-R/decor/lighting/B-Rlamp2.png" },
+    { id:"B-Rlight3",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"B-R/decor/lighting/B-Rlamp3.png" },
+    { id:"B-Rlight4",   cat:"lighting",   unlockAt:19, defaultW:100,  defaultH:150, src:"B-R/decor/lighting/B-Rlamp4.png" },
+    { id:"light3",      cat:"lighting",   unlockAt:23, defaultW:100,  defaultH:300, src:"img/illus/lamp3.png" },
+    { id:"B-Rlight5",   cat:"lighting",   unlockAt:23, defaultW:170,  defaultH:300, src:"B-R/decor/lighting/B-Rlamp5.png" },
+    { id:"B-Rlight6",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:200, src:"B-R/decor/lighting/B-Rlamp6.png" },
+    { id:"light2",      cat:"lighting",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/lamp2.png" },    
+    { id:"B-Rlight7",   cat:"lighting",   unlockAt:23, defaultW:140,  defaultH:180, src:"B-R/decor/lighting/B-Rlamp7.png" },
+    { id:"B-Rlight8",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:300, src:"B-R/decor/lighting/B-Rlamp8.png" },
+// plant(blue-red) ═══════════ 
+    { id:"B-Rplant1",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"B-R/decor/plant/B-Rplant1.png" },
+    { id:"plant1",      cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"img/illus/plant1.png" },
+    { id:"B-Rplant2",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"B-R/decor/plant/B-Rplant2.png" },
+    { id:"B-Rplant3",   cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"B-R/decor/plant/B-Rplant3.png" }, 
+    { id:"plant2",      cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"img/illus/plant2.png" },
+    { id:"B-Rplant4",   cat:"plants",   unlockAt:19, defaultW:160,  defaultH:230, src:"B-R/decor/plant/B-Rplant4.png" },
+    { id:"plant3",      cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"img/illus/plant3.png" },
+    { id:"B-Rplant5",   cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"B-R/decor/plant/B-Rplant5.png" },
+    { id:"B-Rplant6",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-R/decor/plant/B-Rplant6.png" }, 
+    { id:"plant4",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant4.png" },
+    { id:"B-Rplant7",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-R/decor/plant/B-Rplant7.png" },
+    { id:"plant5",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant5.png" },
+    { id:"B-Rplant8",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-R/decor/plant/B-Rplant8.png" },
+// pets(blue-red) ═══════════ 
+    { id:"B-Rpet1",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:240, src:"B-R/pets/B-Rcat1.png" },
+    { id:"B-Rpet2",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:300, src:"B-R/pets/B-Rcat2.png" },            
+    { id:"B-Rpet3",   cat:"pets",   unlockAt:36, defaultW:150,  defaultH:170, src:"B-R/pets/B-Rfish1.png" },
+    { id:"B-Rpet4",   cat:"pets",   unlockAt:36, defaultW:120,  defaultH:120, src:"B-R/pets/B-Rfish2.png" },
+    { id:"B-Rpet5",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"B-R/pets/B-Rhamster.png" }, 
+    { id:"B-Rpet6",   cat:"pets",   unlockAt:36, defaultW:170,  defaultH:170, src:"B-R/pets/B-Rguinea.png" }, 
+    { id:"B-Rpet7",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"B-R/pets/B-Rdog1.png" },
+    { id:"B-Rpet8",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"B-R/pets/B-Rdog2.png" },
+    { id:"B-Rpet9",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"B-R/pets/B-Rdog3.png" },    
+
+  ],
+  "blue-green": [
+   // decor(blue-green) ═══════════
+    // rugs(blue-green) ═══════════
+    { id:"B-Grug1",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-G/rugs/B-Grug1.png" },
+    { id:"B-Grug2",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-G/rugs/B-Grug2.png" },
+    { id:"B-Grug3",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-G/rugs/B-Grug3.png" },
+    { id:"B-Grug4",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-G/rugs/B-Grug4.png" },
+    { id:"B-Grug5",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"B-G/rugs/B-Grug5.png" },
+    // miscallaneous(blue-green) ═══════════
+    { id:"B-Gdecor1",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:250, src:"B-G/decor/B-Gguitar.png" },
+    { id:"B-Gdecor5",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:80, src:"img/illus/radio+cd.png" },
+    { id:"B-Gdecor2",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"B-G/decor/B-Gmug1.png" },
+    { id:"B-Gdecor6",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/teapot.png" },    
+    { id:"B-Gdecor3",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"B-G/decor/B-Gmug2.png" },
+    { id:"B-Gdecor7",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/coffeepot.png" },
+    { id:"B-Gdecor4",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:170, src:"B-G/decor/B-Gglobe.png" },
+    { id:"B-Gdecor8",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:100, src:"img/illus/Rplayer.png" },
+            // frame(blue-GREEN) ═══════════
+    { id:"B-Gframe1",   cat:"decor",  unlockAt:29,  defaultW:130, defaultH:130, src:"B-G/decor/frame/frame1.png" },
+    { id:"B-Gframe2",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-G/decor/frame/frame2.png" },
+    { id:"B-Gframe3",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"B-G/decor/frame/frame3.png" },
+    { id:"B-Gframe4",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-G/decor/frame/frame4.png" },
+    { id:"B-Gframe5",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"B-G/decor/frame/frame5.png" },
+    { id:"B-Gframe6",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"B-G/decor/frame/frame6.png" },  
+        // plushie(blue-GREEN) ═══════════
+    { id:"B-Gplushie1",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-G/decor/plushie/bunny.png" },
+    { id:"B-Gplushie2",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-G/decor/plushie/dino.png" },
+    { id:"B-Gplushie3",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-G/decor/plushie/bear.png" },
+    { id:"B-Gplushie4",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-G/decor/plushie/monkey.png" },
+    { id:"B-Gplushie5",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-G/decor/plushie/panda.png" },
+    { id:"B-Gplushie6",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-G/decor/plushie/penguin.png" },
+    { id:"B-Gplushie7",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-G/decor/plushie/tiger.png" },
+    { id:"B-Gplushie8",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"B-G/decor/plushie/elephant.png" },
+    { id:"B-Gplushie9",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"B-G/decor/plushie/giraffe.png" },        
+// Chair(blue-green) ═══════════
+    { id:"B-Gchair1",   cat:"seating",  unlockAt:7, defaultW:200,  defaultH:300, src:"B-G/sit/B-Gchair1.png" },
+    { id:"chair1",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:240, src:"img/illus/chair1.png" },
+    { id:"B-Gchair2",   cat:"seating",  unlockAt:7, defaultW:300, defaultH:200, src:"B-G/sit/B-Gchair2.png" },
+    { id:"B-Gchair3",   cat:"seating",  unlockAt:7, defaultW:200, defaultH:250, src:"B-G/sit/B-Gchair3.png" },
+    { id:"chair2",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:260, src:"img/illus/chair2.png" },
+    { id:"B-Gchair4",   cat:"seating",  unlockAt:7, defaultW:300,  defaultH:200,  src:"B-G/sit/B-Gchair4.png" },
+    { id:"B-Gchair5",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-G/sit/B-Gchair5.png" },
+    { id:"chair3",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair3.png" },
+    { id:"B-Gchair6",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-G/sit/B-Gchair6.png" },
+    { id:"B-Gchair7",   cat:"seating",  unlockAt:11, defaultW:200, defaultH:250,  src:"B-G/sit/B-Gchair7.png" }, 
+    { id:"chair4",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair4.png" },
+    { id:"B-Gchair8",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"B-G/sit/B-Gchair8.png" },
+// Table(blue-red) ═══════════ 
+    { id:"B-Gtable1",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120, src:"B-G/table/B-Gtable1.png" },
+    { id:"B-Gtable2",   cat:"tables",   unlockAt:13, defaultW:230, defaultH:200, src:"B-G/table/B-Gtable2.png" },
+    { id:"table2",      cat:"tables",   unlockAt:13, defaultW:300,  defaultH:130, src:"img/illus/table2.png" },
+    { id:"B-Gtable3",   cat:"tables",   unlockAt:13, defaultW:250, defaultH:200, src:"B-G/table/B-Gtable3.png" },
+    { id:"B-Gtable4",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120,  src:"B-G/table/B-Gtable4.png" },
+    { id:"table3",      cat:"tables",   unlockAt:13, defaultW:200,  defaultH:200, src:"img/illus/table3.png" },
+    { id:"B-Gtable5",   cat:"tables",   unlockAt:17, defaultW:300, defaultH:200,  src:"B-G/table/B-Gtable5.png" },
+    { id:"table4",      cat:"tables",   unlockAt:17, defaultW:110,  defaultH:180, src:"img/illus/table4.png" },
+    { id:"B-Gtable6",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"B-G/table/B-Gtable6.png" },
+    { id:"B-Gtable7",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"B-G/table/B-Gtable7.png" },
+    { id:"table1",      cat:"tables",   unlockAt:17, defaultW:200,  defaultH:180, src:"img/illus/table1.png" },
+    { id:"B-Gtable8",   cat:"tables",   unlockAt:17, defaultW:110, defaultH:180,  src:"B-G/table/B-Gtable8.png" },
+// lighting(blue-red) ═══════════ 
+    { id:"B-Glight1",   cat:"lighting",   unlockAt:19, defaultW:150,  defaultH:150, src:"B-G/decor/lighting/B-Glamp1.png" },
+    { id:"light1",      cat:"lighting",   unlockAt:19, defaultW:120,  defaultH:150, src:"img/illus/lamp1.png" },
+    { id:"B-Glight2",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"B-G/decor/lighting/B-Glamp2.png" },
+    { id:"B-Glight3",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"B-G/decor/lighting/B-Glamp3.png" },
+    { id:"B-Glight4",   cat:"lighting",   unlockAt:19, defaultW:100,  defaultH:150, src:"B-G/decor/lighting/B-Glamp4.png" },
+    { id:"light3",      cat:"lighting",   unlockAt:23, defaultW:100,  defaultH:300, src:"img/illus/lamp3.png" },
+    { id:"B-Rlight5",   cat:"lighting",   unlockAt:23, defaultW:170,  defaultH:300, src:"B-G/decor/lighting/B-Glamp5.png" },
+    { id:"B-Rlight6",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:200, src:"B-G/decor/lighting/B-Glamp6.png" },
+    { id:"light2",      cat:"lighting",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/lamp2.png" },    
+    { id:"B-Rlight7",   cat:"lighting",   unlockAt:23, defaultW:140,  defaultH:180, src:"B-G/decor/lighting/B-Glamp7.png" },
+    { id:"B-Rlight8",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:300, src:"B-G/decor/lighting/B-Glamp8.png" },
+// plant(blue-red) ═══════════ 
+    { id:"B-Gplant1",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"B-G/decor/plant/B-Gplant1.png" },
+    { id:"plant1",      cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"img/illus/plant1.png" },
+    { id:"B-Gplant2",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"B-G/decor/plant/B-Gplant2.png" },
+    { id:"B-GRplant3",  cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"B-G/decor/plant/B-Gplant3.png" }, 
+    { id:"plant2",      cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"img/illus/plant2.png" },
+    { id:"B-Gplant4",   cat:"plants",   unlockAt:19, defaultW:160,  defaultH:230, src:"B-G/decor/plant/B-Gplant4.png" },
+    { id:"plant3",      cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"img/illus/plant3.png" },
+    { id:"B-Gplant5",   cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"B-G/decor/plant/B-Gplant5.png" },
+    { id:"B-Gplant6",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-G/decor/plant/B-Gplant6.png" }, 
+    { id:"plant4",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant4.png" },
+    { id:"B-Gplant7",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-G/decor/plant/B-Gplant7.png" },
+    { id:"plant5",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant5.png" },
+    { id:"B-Gplant8",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"B-G/decor/plant/B-Gplant8.png" },
+// pets(blue-red) ═══════════ 
+    { id:"B-Gpet1",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:240, src:"B-G/pets/B-Gcat1.png" },
+    { id:"B-Gpet2",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:300, src:"B-G/pets/B-Gcat2.png" },            
+    { id:"B-Gpet3",   cat:"pets",   unlockAt:36, defaultW:150,  defaultH:170, src:"B-G/pets/B-Gfish1.png" },
+    { id:"B-Gpet4",   cat:"pets",   unlockAt:36, defaultW:120,  defaultH:120, src:"B-G/pets/B-Gfish2.png" },
+    { id:"B-Gpet5",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"B-G/pets/B-Ghamster.png" }, 
+    { id:"B-Gpet6",   cat:"pets",   unlockAt:36, defaultW:170,  defaultH:170, src:"B-G/pets/B-Gguinea.png" }, 
+    { id:"B-Gpet7",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"B-G/pets/B-Gdog1.png" },
+    { id:"B-Gpet8",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"B-G/pets/B-Gdog2.png" },
+    { id:"B-Gpet9",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"B-G/pets/B-Gdog3.png" },    
+     
+  ],
+  "red-yellow": [
+   // decor(red-yellow) ═══════════
+    // rugs(red-yellow) ═══════════
+    { id:"R-Yrug1",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"R-Y/rugs/R-Yrug1.png" },
+    { id:"R-Yrug2",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"R-Y/rugs/R-Yrug2.png" },
+    { id:"R-Yrug3",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"R-Y/rugs/R-Yrug3.png" },
+    { id:"R-Yrug4",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"R-Y/rugs/R-Yrug4.png" },
+    { id:"R-Yrug5",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"R-Y/rugs/R-Yrug5.png" },
+    // miscallaneous(red-yellow) ═══════════
+    { id:"R-Ydecor1",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:250, src:"R-Y/decor/R-Yguitar.png" },
+    { id:"R-Ydecor5",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:80, src:"img/illus/radio+cd.png" },
+    { id:"R-Ydecor2",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"R-Y/decor/R-Ymug1.png" },
+    { id:"R-Ydecor6",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/teapot.png" },    
+    { id:"R-Ydecor3",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"R-Y/decor/R-Ymug2.png" },
+    { id:"R-Ydecor7",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/coffeepot.png" },
+    { id:"R-Ydecor4",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:170, src:"R-Y/decor/R-Yglobe.png" },
+    { id:"R-Ydecor8",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:100, src:"img/illus/Rplayer.png" },
+                   // frame(RED-yellow) ═══════════
+    { id:"R-Yframe1",   cat:"decor",  unlockAt:29,  defaultW:130, defaultH:130, src:"R-Y/decor/frame/frame1.png" },
+    { id:"R-Yframe2",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"R-Y/decor/frame/frame2.png" },
+    { id:"R-Yframe3",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"R-Y/decor/frame/frame3.png" },
+    { id:"R-Yframe4",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"R-Y/decor/frame/frame4.png" },
+    { id:"R-Yframe5",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"R-Y/decor/frame/frame5.png" },
+    { id:"R-Yframe6",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"R-Y/decor/frame/frame6.png" },  
+        // plushie(RED-yellow) ═══════════
+    { id:"R-Yplushie1",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"R-Y/decor/plushie/bunny.png" },
+    { id:"R-Yplushie2",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"R-Y/decor/plushie/dino.png" },
+    { id:"R-Yplushie3",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"R-Y/decor/plushie/bear.png" },
+    { id:"R-Yplushie4",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"R-Y/decor/plushie/monkey.png" },
+    { id:"R-Yplushie5",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"R-Y/decor/plushie/panda.png" },
+    { id:"R-Yplushie6",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"R-Y/decor/plushie/penguin.png" },
+    { id:"R-Yplushie7",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"R-Y/decor/plushie/tiger.png" },
+    { id:"R-Yplushie8",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"R-Y/decor/plushie/elephant.png" },
+    { id:"R-Yplushie9",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"R-Y/decor/plushie/giraffe.png" },      
+// Chair(red-yellow) ═══════════
+    { id:"R-Ychair1",   cat:"seating",  unlockAt:7, defaultW:200,  defaultH:300, src:"R-Y/sit/R-Ychair1.png" },
+    { id:"chair1",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:240, src:"img/illus/chair1.png" },
+    { id:"R-Ychair2",   cat:"seating",  unlockAt:7, defaultW:300, defaultH:200, src:"R-Y/sit/R-Ychair2.png" },
+    { id:"R-Ychair3",   cat:"seating",  unlockAt:7, defaultW:200, defaultH:250, src:"R-Y/sit/R-Ychair3.png" },
+    { id:"chair2",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:260, src:"img/illus/chair2.png" },
+    { id:"R-Ychair4",   cat:"seating",  unlockAt:7, defaultW:300,  defaultH:200,  src:"R-Y/sit/R-Ychair4.png" },
+    { id:"R-Ychair5",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"R-Y/sit/R-Ychair5.png" },
+    { id:"chair3",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair3.png" },
+    { id:"R-Ychair6",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"R-Y/sit/R-Ychair6.png" },
+    { id:"R-Ychair7",   cat:"seating",  unlockAt:11, defaultW:200, defaultH:250,  src:"R-Y/sit/R-Ychair7.png" }, 
+    { id:"chair4",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair4.png" },
+    { id:"R-Ychair8",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"R-Y/sit/R-Ychair8.png" },
+// Table(RED-yellow) ═══════════ 
+    { id:"R-Ytable1",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120, src:"R-Y/table/R-Ytable1.png" },
+    { id:"R-Ytable2",   cat:"tables",   unlockAt:13, defaultW:230, defaultH:200, src:"R-Y/table/R-Ytable2.png" },
+    { id:"table2",      cat:"tables",   unlockAt:13, defaultW:300,  defaultH:130, src:"img/illus/table2.png" },
+    { id:"R-Ytable3",   cat:"tables",   unlockAt:13, defaultW:250, defaultH:200, src:"R-Y/table/R-Ytable3.png" },
+    { id:"R-Ytable4",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120,  src:"R-Y/table/R-Ytable4.png" },
+    { id:"table3",      cat:"tables",   unlockAt:13, defaultW:200,  defaultH:200, src:"img/illus/table3.png" },
+    { id:"R-Ytable5",   cat:"tables",   unlockAt:17, defaultW:300, defaultH:200,  src:"R-Y/table/R-Ytable5.png" },
+    { id:"table4",      cat:"tables",   unlockAt:17, defaultW:110,  defaultH:180, src:"img/illus/table4.png" },
+    { id:"R-Ytable6",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"R-Y/table/R-Ytable6.png" },
+    { id:"R-Ytable7",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"R-Y/table/R-Ytable7.png" },
+    { id:"table1",      cat:"tables",   unlockAt:17, defaultW:200,  defaultH:180, src:"img/illus/table1.png" },
+    { id:"R-Ytable8",   cat:"tables",   unlockAt:17, defaultW:110, defaultH:180,  src:"R-Y/table/R-Ytable8.png" },
+// lighting(RED-YELLOW) ═══════════ 
+    { id:"R-Ylight1",   cat:"lighting",   unlockAt:19, defaultW:150,  defaultH:150, src:"R-Y/decor/lighting/R-Ylamp1.png" },
+    { id:"light1",      cat:"lighting",   unlockAt:19, defaultW:120,  defaultH:150, src:"img/illus/lamp1.png" },
+    { id:"R-Ylight2",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"R-Y/decor/lighting/R-Ylamp2.png" },
+    { id:"R-Ylight3",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"R-Y/decor/lighting/R-Ylamp3.png" },
+    { id:"R-Ylight4",   cat:"lighting",   unlockAt:19, defaultW:100,  defaultH:150, src:"R-Y/decor/lighting/R-Ylamp4.png" },
+    { id:"light3",      cat:"lighting",   unlockAt:23, defaultW:100,  defaultH:300, src:"img/illus/lamp3.png" },
+    { id:"R-Ylight5",   cat:"lighting",   unlockAt:23, defaultW:170,  defaultH:300, src:"R-Y/decor/lighting/R-Ylamp5.png" },
+    { id:"R-Ylight6",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:200, src:"R-Y/decor/lighting/R-Ylamp6.png" },
+    { id:"light2",      cat:"lighting",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/lamp2.png" },    
+    { id:"R-Ylight7",   cat:"lighting",   unlockAt:23, defaultW:140,  defaultH:180, src:"R-Y/decor/lighting/R-Ylamp7.png" },
+    { id:"R-Ylight8",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:300, src:"R-Y/decor/lighting/R-Ylamp8.png" },
+// plant(RED-YELLOW) ═══════════ 
+    { id:"R-Yplant1",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"R-Y/decor/plant/R-Yplant1.png" },
+    { id:"plant1",      cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"img/illus/plant1.png" },
+    { id:"R-Yplant2",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"R-Y/decor/plant/R-Yplant2.png" },
+    { id:"R-Yplant3",   cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"R-Y/decor/plant/R-Yplant3.png" }, 
+    { id:"plant2",      cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"img/illus/plant2.png" },
+    { id:"R-Yplant4",   cat:"plants",   unlockAt:19, defaultW:160,  defaultH:230, src:"R-Y/decor/plant/R-Yplant4.png" },
+    { id:"plant3",      cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"img/illus/plant3.png" },
+    { id:"R-Yplant5",   cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"R-Y/decor/plant/R-Yplant5.png" },
+    { id:"R-Yplant6",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"R-Y/decor/plant/R-Yplant6.png" }, 
+    { id:"plant4",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant4.png" },
+    { id:"R-Yplant7",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"R-Y/decor/plant/R-Yplant7.png" },
+    { id:"plant5",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant5.png" },
+    { id:"R-Yplant8",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"R-Y/decor/plant/R-Yplant8.png" },
+// pets(RED-yellow) ═══════════ 
+    { id:"R-Ypet1",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:240, src:"R-Y/pets/R-Ycat1.png" },
+    { id:"R-Ypet2",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:300, src:"R-Y/pets/R-Ycat2.png" },            
+    { id:"R-Ypet3",   cat:"pets",   unlockAt:36, defaultW:150,  defaultH:170, src:"R-Y/pets/R-Yfish1.png" },
+    { id:"R-Ypet4",   cat:"pets",   unlockAt:36, defaultW:120,  defaultH:120, src:"R-Y/pets/R-Yfish2.png" },
+    { id:"R-Ypet5",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"R-Y/pets/R-Yhamster.png" }, 
+    { id:"R-Ypet6",   cat:"pets",   unlockAt:36, defaultW:170,  defaultH:170, src:"R-Y/pets/R-Yguinea.png" }, 
+    { id:"R-Ypet7",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"R-Y/pets/R-Ydog1.png" },
+    { id:"R-Ypet8",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"R-Y/pets/R-Ydog2.png" },
+    { id:"R-Ypet9",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"R-Y/pets/R-Ydog3.png" },     
+
+  ],
+  "red-green": [
+// decor(red-green) ═══════════
+    // rugs(red-green) ═══════════
+    { id:"G-Rrug1",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"G-R/rugs/G-Rrug1.png" },
+    { id:"G-Rrug2",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"G-R/rugs/G-Rrug2.png" },
+    { id:"G-Rrug3",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"G-R/rugs/G-Rrug3.png" },
+    { id:"G-Rrug4",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"G-R/rugs/G-Rrug4.png" },
+    { id:"G-Rrug5",   cat:"decor",  unlockAt:3,  defaultW:300, defaultH:100, src:"G-R/rugs/G-Rrug5.png" },
+    // miscallaneous(red-green) ═══════════
+    { id:"G-Rdecor1",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:250, src:"G-R/decor/G-Rguitar.png" },
+    { id:"G-Rdecor5",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:80, src:"img/illus/radio+cd.png" },
+    { id:"G-Rdecor2",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"G-R/decor/G-Rmug1.png" },
+    { id:"G-Rdecor6",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/teapot.png" },    
+    { id:"G-Rdecor3",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:80, src:"G-R/decor/G-Rmug2.png" },
+    { id:"G-Rdecor7",   cat:"decor",  unlockAt:27,  defaultW:80, defaultH:100, src:"img/illus/coffeepot.png" },
+    { id:"G-Rdecor4",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:170, src:"G-R/decor/G-Rglobe.png" },
+    { id:"G-Rdecor8",   cat:"decor",  unlockAt:27,  defaultW:150, defaultH:100, src:"img/illus/Rplayer.png" },
+               // frame(red-green) ═══════════
+    { id:"G-Rframe1",   cat:"decor",  unlockAt:29,  defaultW:130, defaultH:130, src:"G-R/decor/frame/frame1.png" },
+    { id:"G-Rframe2",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"G-R/decor/frame/frame2.png" },
+    { id:"G-Rframe3",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"G-R/decor/frame/frame3.png" },
+    { id:"G-Rframe4",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"G-R/decor/frame/frame4.png" },
+    { id:"G-Rframe5",   cat:"decor",  unlockAt:29,  defaultW:200, defaultH:200, src:"G-R/decor/frame/frame5.png" },
+    { id:"G-Rframe6",   cat:"decor",  unlockAt:29,  defaultW:300, defaultH:200, src:"G-R/decor/frame/frame6.png" },  
+        // plushie(red-green) ═══════════
+    { id:"G-Rplushie1",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"G-R/decor/plushie/bunny.png" },
+    { id:"G-Rplushie2",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"G-R/decor/plushie/dino.png" },
+    { id:"G-Rplushie3",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"G-R/decor/plushie/bear.png" },
+    { id:"G-Rplushie4",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"G-R/decor/plushie/monkey.png" },
+    { id:"G-Rplushie5",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"G-R/decor/plushie/panda.png" },
+    { id:"G-Rplushie6",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"G-R/decor/plushie/penguin.png" },
+    { id:"G-Rplushie7",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"G-R/decor/plushie/tiger.png" },
+    { id:"G-Rplushie8",   cat:"decor",  unlockAt:32,  defaultW:220, defaultH:180, src:"G-R/decor/plushie/elephant.png" },
+    { id:"G-Rplushie9",   cat:"decor",  unlockAt:32,  defaultW:180, defaultH:180, src:"G-R/decor/plushie/giraffe.png" },  
+// Chair(red-green) ═══════════
+    { id:"G-Rchair1",   cat:"seating",  unlockAt:7, defaultW:200,  defaultH:300, src:"G-R/sit/G-Rchair1.png" },
+    { id:"chair1",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:240, src:"img/illus/chair1.png" },
+    { id:"G-Rchair2",   cat:"seating",  unlockAt:7, defaultW:300, defaultH:200, src:"G-R/sit/G-Rchair2.png" },
+    { id:"G-Rchair3",   cat:"seating",  unlockAt:7, defaultW:200, defaultH:250, src:"G-R/sit/G-Rchair3.png" },
+    { id:"chair2",      cat:"seating",  unlockAt:7, defaultW:200,  defaultH:260, src:"img/illus/chair2.png" },
+    { id:"G-Rchair4",   cat:"seating",  unlockAt:7, defaultW:300,  defaultH:200,  src:"G-R/sit/G-Rchair4.png" },
+    { id:"G-Rchair5",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"G-R/sit/G-Rchair5.png" },
+    { id:"chair3",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair3.png" },
+    { id:"G-Rchair6",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"G-R/sit/G-Rchair6.png" },
+    { id:"G-Rchair7",   cat:"seating",  unlockAt:11, defaultW:200, defaultH:250,  src:"G-R/sit/G-Rchair7.png" }, 
+    { id:"chair4",      cat:"seating",  unlockAt:11, defaultW:300,  defaultH:200, src:"img/illus/chair4.png" },
+    { id:"G-Rchair8",   cat:"seating",  unlockAt:11, defaultW:300, defaultH:200,  src:"G-R/sit/G-Rchair8.png" },
+// Table(red-green) ═══════════ 
+    { id:"G-Rtable1",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120, src:"G-R/table/G-Rtable1.png" },
+    { id:"G-Rtable2",   cat:"tables",   unlockAt:13, defaultW:230, defaultH:200,  src:"G-R/table/G-Rtable2.png" },
+    { id:"table2",      cat:"tables",   unlockAt:13, defaultW:300,  defaultH:130, src:"img/illus/table2.png" },
+    { id:"G-Rtable3",   cat:"tables",   unlockAt:13, defaultW:250, defaultH:200,  src:"G-R/table/G-Rtable3.png" },
+    { id:"G-Rtable4",   cat:"tables",   unlockAt:13, defaultW:150,  defaultH:120, src:"G-R/table/G-Rtable4.png" },
+    { id:"table3",      cat:"tables",   unlockAt:13, defaultW:200,  defaultH:200, src:"img/illus/table3.png" },
+    { id:"G-Rtable5",   cat:"tables",   unlockAt:17, defaultW:300, defaultH:200,  src:"G-R/table/G-Rtable5.png" },
+    { id:"table4",      cat:"tables",   unlockAt:17, defaultW:110,  defaultH:180, src:"img/illus/table4.png" },
+    { id:"G-Rtable6",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"G-R/table/G-Rtable6.png" },
+    { id:"G-Rtable7",   cat:"tables",   unlockAt:17, defaultW:200, defaultH:200,  src:"G-R/table/G-Rtable7.png" },
+    { id:"table1",      cat:"tables",   unlockAt:17, defaultW:200,  defaultH:180, src:"img/illus/table1.png" },
+    { id:"G-Rtable8",   cat:"tables",   unlockAt:17, defaultW:110, defaultH:180,  src:"G-R/table/G-Rtable8.png" },
+// lighting(red-green) ═══════════ 
+    { id:"G-Rlight1",   cat:"lighting",   unlockAt:19, defaultW:150,  defaultH:150, src:"G-R/decor/lighting/G-Rlamp1.png" },
+    { id:"light1",      cat:"lighting",   unlockAt:19, defaultW:120,  defaultH:150, src:"img/illus/lamp1.png" },
+    { id:"G-Rlight2",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"G-R/decor/lighting/G-Rlamp2.png" },
+    { id:"G-Rlight3",   cat:"lighting",   unlockAt:19, defaultW:110,  defaultH:150, src:"G-R/decor/lighting/G-Rlamp3.png" },
+    { id:"G-Rlight4",   cat:"lighting",   unlockAt:19, defaultW:100,  defaultH:150, src:"G-R/decor/lighting/G-Rlamp4.png" },
+    { id:"light3",      cat:"lighting",   unlockAt:23, defaultW:100,  defaultH:300, src:"img/illus/lamp3.png" },
+    { id:"G-Rlight5",   cat:"lighting",   unlockAt:23, defaultW:170,  defaultH:300, src:"G-R/decor/lighting/G-Rlamp5.png" },
+    { id:"G-Rlight6",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:200, src:"G-R/decor/lighting/G-Rlamp6.png" },
+    { id:"light2",      cat:"lighting",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/lamp2.png" },    
+    { id:"G-Rlight7",   cat:"lighting",   unlockAt:23, defaultW:140,  defaultH:180, src:"G-R/decor/lighting/G-Rlamp7.png" },
+    { id:"G-Rlight8",   cat:"lighting",   unlockAt:23, defaultW:150,  defaultH:300, src:"G-R/decor/lighting/G-Rlamp8.png" },
+// plant(red-green) ═══════════ 
+    { id:"G-Rplant1",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"G-R/decor/plant/G-Rplant1.png" },
+    { id:"plant1",      cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"img/illus/plant1.png" },
+    { id:"G-Rplant2",   cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"G-R/decor/plant/G-Rplant2.png" },
+    { id:"G-Rplant3",   cat:"plants",   unlockAt:19, defaultW:200,  defaultH:300, src:"G-R/decor/plant/G-Rplant3.png" }, 
+    { id:"plant2",      cat:"plants",   unlockAt:19, defaultW:120,  defaultH:120, src:"img/illus/plant2.png" },
+    { id:"G-Rplant4",   cat:"plants",   unlockAt:19, defaultW:160,  defaultH:230, src:"G-R/decor/plant/G-Rplant4.png" },
+    { id:"plant3",      cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"img/illus/plant3.png" },
+    { id:"G-Rplant5",   cat:"plants",   unlockAt:23, defaultW:160,  defaultH:230, src:"G-R/decor/plant/G-Rplant5.png" },
+    { id:"G-Rplant6",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"G-R/decor/plant/G-Rplant6.png" }, 
+    { id:"plant4",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant4.png" },
+    { id:"G-Rplant7",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"G-R/decor/plant/G-Rplant7.png" },
+    { id:"plant5",      cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"img/illus/plant5.png" },
+    { id:"G-Rplant8",   cat:"plants",   unlockAt:23, defaultW:120,  defaultH:120, src:"G-R/decor/plant/G-Rplant8.png" },
+// pets(red-green) ═══════════ 
+    { id:"G-Rpet1",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:240, src:"G-R/pets/G-Rcat1.png" },
+    { id:"G-Rpet2",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:300, src:"G-R/pets/G-Rcat2.png" },            
+    { id:"G-Rpet3",   cat:"pets",   unlockAt:36, defaultW:150,  defaultH:170, src:"G-R/pets/G-Rfish1.png" },
+    { id:"G-Rpet4",   cat:"pets",   unlockAt:36, defaultW:120,  defaultH:120, src:"G-R/pets/G-Rfish2.png" },
+    { id:"G-Rpet5",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"G-R/pets/G-Rhamster.png" }, 
+    { id:"G-Rpet6",   cat:"pets",   unlockAt:36, defaultW:170,  defaultH:170, src:"G-R/pets/G-Rguinea.png" }, 
+    { id:"G-Rpet7",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"G-R/pets/G-Rdog1.png" },
+    { id:"G-Rpet8",   cat:"pets",   unlockAt:36, defaultW:200,  defaultH:200, src:"G-R/pets/G-Rdog2.png" },
+    { id:"G-Rpet9",   cat:"pets",   unlockAt:36, defaultW:300,  defaultH:200, src:"G-R/pets/G-Rdog3.png" },                                
+  ],
+};
+
+let activeCategory = "seating";
+
+const onboardingData = JSON.parse(localStorage.getItem("saferoom_onboarding") || "{}");
+const FURNITURE = FURNITURE_SETS[onboardingData.furnitureSet] || FURNITURE_SETS["blue-yellow"];
+const DUO_COLORS = {
+  "blue-yellow": { culture1: "#4a7ab8", culture2: "#f9c006" },
+  "blue-red":    { culture1: "#4a7ab8", culture2: "#c94a4a" },
+  "blue-green":  { culture1: "#4a7ab8", culture2: "#4a9e5c" },
+  "red-yellow":  { culture1: "#c94a4a", culture2: "#f9c006" },
+  "red-green":   { culture1: "#c94a4a", culture2: "#4a9e5c" },
+};
+const COLOR_CIRCLES = {
+  "#4a7ab8": "img/circle-blue.png",
+  "#f9c006": "img/yellow-circle.png",
+  "#c94a4a": "img/circle-red.png",
+  "#4a9e5c": "img/circle-green.png",
+};
+const duoColors = DUO_COLORS[onboardingData.furnitureSet] || DUO_COLORS["blue-yellow"];
+const TOPICS = [
+  { id:"anecdotes",  label:"Anecdotes",  icon:"✿", placeholder:"A story, memory, or moment that captures this part of you..." },
+  { id:"artists",    label:"Artists",    icon:"☁︎", placeholder:"Artists, writers, filmmakers, creators from this culture..." },
+  { id:"food",       label:"Food",       icon:"𖦹", placeholder:"Dishes, flavors, meals, recipes that feel like home..." },
+  { id:"history",    label:"History",    icon:"𖤓", placeholder:"Historical events, figures, or stories that shaped this identity..." },
+  { id:"hobbies",    label:"Hobbies",    icon:"❤︎", placeholder:"Activities, pastimes, rituals passed down or discovered..." },
+  { id:"language",   label:"Language",   icon:"ᯤ", placeholder:"Words, phrases, expressions, or the feeling of a language..." },
+  { id:"literature", label:"Literature", icon:"☽", placeholder:"Books, poems, letters, or authors from this culture..." },  
+  { id:"music",      label:"Music",      icon:"♪", placeholder:"Songs, genres, artists, or sounds from this part of your world..." },
+  { id:"movies",     label:"Movies",     icon:"★", placeholder:"Films, TV shows, or stories that feel culturally yours..." },
+  { id:"traditions", label:"Traditions", icon:"♒︎", placeholder:"Rituals, celebrations, customs, seasonal practices..." },
+  { id:"special",    label:"Special",    icon:"᪥", placeholder:"Anything special to your hybrid experience..." },
+];
+
+// ══════════════════════════════════════════
+// INDEXED DB FOR DIY IMAGES
+// ══════════════════════════════════════════
+
+let diyDB = null;
+
+function initDiyDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("saferoom_diy", 1);
+    req.onupgradeneeded = e => {
+      e.target.result.createObjectStore("images", { keyPath: "id" });
+    };
+    req.onsuccess = e => {
+      diyDB = e.target.result;
+      resolve();
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function saveDiyImage(id, dataUrl) {
+  return new Promise((resolve, reject) => {
+    const tx    = diyDB.transaction("images", "readwrite");
+    const store = tx.objectStore("images");
+    store.put({ id, dataUrl });
+    tx.oncomplete = resolve;
+    tx.onerror    = () => reject(tx.error);
+  });
+}
+
+
+function deleteDiyImage(id) {
+  return new Promise((resolve) => {
+    if (!diyDB) { resolve(); return; }
+    const tx    = diyDB.transaction("images", "readwrite");
+    const store = tx.objectStore("images");
+    store.delete(id);
+    tx.oncomplete = resolve;
+    tx.onerror    = resolve;
+  });
+}
+
+function getDiyImage(id) {
+  return new Promise((resolve) => {
+    if (!diyDB) { resolve(""); return; }
+    const tx    = diyDB.transaction("images", "readonly");
+    const store = tx.objectStore("images");
+    const req   = store.get(id);
+    req.onsuccess = () => resolve(req.result ? req.result.dataUrl : "");
+    req.onerror   = () => resolve("");
+  });
+}
+
+function bringToFront(id) {
+  const idx = state.placedFurniture.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  const item = state.placedFurniture.splice(idx, 1)[0];
+  state.placedFurniture.push(item);
+  saveState();
+  updateAllZIndexes();
+}
+
+function sendToBack(id) {
+  const idx = state.placedFurniture.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  const item = state.placedFurniture.splice(idx, 1)[0];
+  state.placedFurniture.unshift(item);
+  saveState();
+  updateAllZIndexes();
+}
+
+function updateAllZIndexes() {
+  state.placedFurniture.forEach((pl, i) => {
+    const el = document.querySelector(`.furniture-item[data-id="${pl.id}"]`);
+    if (el) el.style.zIndex = pl.id === selectedId ? 999 : i + 10;
+  });
+}
+
+const ROOM_COLORS  = ["#e05a8a","#f72585","#5c7eb8","#4a9e5c","#9e4a6a","#e05c5c","#9e7a4a","#7a4a9e"];
+const MIN_SIZE = 40, MAX_SIZE = 600;
+
+
+function openRenameModal() {
+  const cd = state[activeCulture];
+  document.getElementById("rename-input").value = cd.name || "";
+  document.getElementById("rename-modal").style.display = "flex";
+  setTimeout(() => document.getElementById("rename-input").focus(), 50);
+}
+
+function closeRenameModal() {
+  document.getElementById("rename-modal").style.display = "none";
+}
+
+function saveRename() {
+  const val = document.getElementById("rename-input").value.trim();
+  if (!val) return;
+  state[activeCulture].name = val;
+  saveState();
+  closeRenameModal();
+  renderCultureRoom(activeCulture);
+}
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+
+function hexToRgb(hex) {
+  if (!hex || hex.length < 7) return "128,128,128";
+  return `${parseInt(hex.slice(1,3),16)}, ${parseInt(hex.slice(3,5),16)}, ${parseInt(hex.slice(5,7),16)}`;
+}
+function lighten(hex, amt = 40) {
+  const r = Math.min(255, Math.max(0, parseInt(hex.slice(1,3),16) + amt));
+  const g = Math.min(255, Math.max(0, parseInt(hex.slice(3,5),16) + amt));
+  const b = Math.min(255, Math.max(0, parseInt(hex.slice(5,7),16) + amt));
+  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+}
+function formatDate(iso) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+}
+function seededRand(seed) {
+  const x = Math.sin(seed + 1) * 10000;
+  return x - Math.floor(x);
+}
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE  (single source of truth, auto-persisted)
+// ═══════════════════════════════════════════════════════════════════
+
+let state;
+try {
+  const saved = localStorage.getItem("saferoom_v8");
+  state = saved ? JSON.parse(saved) : null;
+} catch(e) { state = null; }
+
+if (!state) {
+  state = {
+    culture1: { name:"", color:"#e05a8a", entries:[] },
+    culture2: { name:"", color:"#5c7eb8", entries:[] },
+    placedFurniture: [
+      { id:"chair", x:120, y:160, w:160, h:160, flipped:false },
+      { id:"lamp",  x:310, y:100, w:90,  h:200, flipped:false },
+    ],
+    roomColor: "#f72585",
+  };
+}
+
+// Always apply names and colors from onboarding
+if (onboardingData.culture1Name) {
+  state.culture1.name = onboardingData.culture1Name;
+  state.culture2.name = onboardingData.culture2Name;
+}
+state.culture1.color = duoColors.culture1;
+state.culture2.color = duoColors.culture2;
+
+
+saveState();
+
+function saveState() {
+  localStorage.setItem("saferoom_v8", JSON.stringify(state));
+}
+
+function totalEntries() {
+  return state.culture1.entries.length + state.culture2.entries.length;
+}
+function isUnlocked(item) {
+  return totalEntries() >= item.unlockAt;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PAGE ROUTING
+// ═══════════════════════════════════════════════════════════════════
+
+let currentPage = "room";  // "room" | "culture1" | "culture2"
+
+function showPage(page) {
+  currentPage = page;
+  document.getElementById("page-room").classList.toggle("active", page === "room");
+  document.getElementById("page-culture").classList.toggle("active", page !== "room");
+  if (page === "room") {
+    renderRoom();
+  } else {
+    renderCultureRoom(page);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SAFE ROOM RENDER
+// ═══════════════════════════════════════════════════════════════════
+
+let globalResizing = false;
+let dragging = null;       // { id, offsetX, offsetY }
+let pendingDrag = null;    // { id, startX, startY, offsetX, offsetY }
+let selectedId  = null;
+
+function renderRoom() {
+  updateEntryCounter();
+  renderFurnitureCanvas();
+  renderInventory();
+
+ // Footer
+  const roomName = onboardingData.saferoomName || state.saferoomName || "Safe Room";
+  document.getElementById("footer-room-name").textContent  = roomName;
+  document.getElementById("footer-entry-count").textContent = `${totalEntries()} entries`;
+
+}
+
+
+
+function updateEntryCounter() {
+  const el = document.getElementById("footer-entry-count");
+  if (el) el.textContent = `${totalEntries()} entries`;
+}
+
+
+
+// ── FURNITURE CANVAS ──
+
+async function renderFurnitureCanvas() {
+  const canvas = document.getElementById("furniture-canvas");
+  canvas.innerHTML = "";
+
+  for (const pl of state.placedFurniture) {
+    const isDiy = pl.id.startsWith("diy_");
+    let item;
+    if (isDiy) {
+      const src = await getDiyImage(pl.id);
+      item = { id: pl.id, label: pl.label || "My Drawing", src, unlockAt: 0 };
+      if (!src) continue;
+    } else {
+      item = FURNITURE.find(f => f.id === pl.id);
+      if (!item) continue;
+    }
+    canvas.appendChild(buildFurnitureEl(pl, item));
+  }
+
+
+  canvas.addEventListener("mousemove",  onCanvasMouseMove);
+  canvas.addEventListener("mouseup",    onCanvasMouseUp);
+  canvas.addEventListener("mouseleave", onCanvasMouseUp);
+}
+
+function buildFurnitureEl(pl, item) {
+  const unlocked = isUnlocked(item);
+  const isSelected = selectedId === pl.id;
+
+// DIY pieces use their stored data URL directly
+  const isDiy  = pl.id.startsWith("diy_");
+  const imgSrc = isDiy ? (pl.src || (state.diyDrawings || []).find(d => d.id === pl.id)?.src || "") : item.src;
+
+  const el = document.createElement("div");
+  el.className = "furniture-item" + (isSelected ? " selected" : "") + (unlocked ? "" : " locked");
+  el.dataset.id = pl.id;
+   const idx  = state.placedFurniture.findIndex(p => p.id === pl.id);
+    const zIdx = idx + 10;
+   el.style.cssText = `left:${pl.x}px;top:${pl.y}px;width:${pl.w}px;height:${pl.h}px;cursor:${unlocked?"grab":"not-allowed"};z-index:${zIdx};pointer-events:all`;
+
+const imgWrap = document.createElement("div");
+imgWrap.style.cssText = `width:100%;height:100%;position:relative;`;
+
+  const img = document.createElement("img");
+  img.src = item.src;
+  img.alt = item.label;
+  img.draggable = false;
+  img.style.transform = pl.flipped ? "scaleX(-1)" : "scaleX(1)";
+  imgWrap.appendChild(img);
+  el.appendChild(imgWrap);
+
+  // Lock overlay
+  if (!unlocked) {
+    const lock = document.createElement("div");
+    lock.className = "lock-overlay";
+    lock.textContent = "🔒";
+    el.appendChild(lock);
+  }
+
+  if (isSelected && unlocked) {
+    // Control bar
+    const bar = document.createElement("div");
+    bar.className = "ctrl-bar";
+    bar.dataset.ctrl = "1";
+bar.innerHTML = `
+  <button class="ctrl-btn" data-ctrl="1" title="Flip">⤾ <span style="font-size:9px;font-family:owners;letter-spacing:0.5px;opacity:0.7">flip</span></button>
+  <button class="ctrl-btn" data-ctrl="1" title="Bring to front">⤒ <span style="font-size:9px;font-family:owners;letter-spacing:0.5px;opacity:0.7">front</span></button>
+  <button class="ctrl-btn" data-ctrl="1" title="Send to back">⤓ <span style="font-size:9px;font-family:owners;letter-spacing:0.5px;opacity:0.7">back</span></button>
+  <button class="ctrl-remove" data-ctrl="1">✕</button>
+`;
+bar.querySelectorAll(".ctrl-btn")[0].addEventListener("click", e => { e.stopPropagation(); flipItem(pl.id); });
+bar.querySelectorAll(".ctrl-btn")[1].addEventListener("click", e => { e.stopPropagation(); bringToFront(pl.id); });
+bar.querySelectorAll(".ctrl-btn")[2].addEventListener("click", e => { e.stopPropagation(); sendToBack(pl.id); });
+bar.querySelector(".ctrl-remove").addEventListener("click",    e => { e.stopPropagation(); removeFromRoom(pl.id); });
+
+
+    // Resize handles
+    el.appendChild(bar);
+
+    ["nw","ne","sw","se"].forEach(corner => {
+      const handle = document.createElement("div");
+      handle.className = `resize-handle ${corner}`;
+      handle.dataset.rh = "1";
+      handle.addEventListener("mousedown", e => startResize(e, pl.id, corner));
+      el.appendChild(handle);
+    });
+  }
+
+  // Drag / click
+  if (unlocked) {
+    el.addEventListener("mousedown", e => {
+      if (e.target.dataset.rh || e.target.dataset.ctrl || e.target.closest("[data-ctrl]")) return;
+      const canvas = document.getElementById("furniture-canvas");
+      const rect   = canvas.getBoundingClientRect();
+      pendingDrag = { id: pl.id, startX: e.clientX, startY: e.clientY,
+        offsetX: e.clientX - rect.left - pl.x, offsetY: e.clientY - rect.top - pl.y };
+      e.preventDefault();
+    });
+    el.addEventListener("click", e => {
+      e.stopPropagation();
+      if (!globalResizing) selectFurniture(pl.id);
+    });
+  }
+
+  return el;
+}
+
+function selectFurniture(id) {
+  selectedId = id;
+  renderFurnitureCanvas();
+}
+
+function flipItem(id) {
+  const pl = state.placedFurniture.find(p => p.id === id);
+  if (pl) { pl.flipped = !pl.flipped; saveState(); renderFurnitureCanvas(); }
+}
+
+function removeFromRoom(id) {
+  state.placedFurniture = state.placedFurniture.filter(p => p.id !== id);
+  saveState();
+  selectedId = null;
+  renderFurnitureCanvas();
+  renderInventory();
+}
+
+function addToRoom(id) {
+  if (state.placedFurniture.find(p => p.id === id)) return;
+  const item = FURNITURE.find(f => f.id === id);
+  state.placedFurniture.push({
+    id, flipped: false,
+    x: 200 + Math.random() * 200,
+    y: 100 + Math.random() * 180,
+    w: item.defaultW, h: item.defaultH,
+  });
+  saveState();
+  selectedId = id;
+  renderFurnitureCanvas();
+  renderInventory();
+}
+
+// ── DRAG ──
+
+function onCanvasMouseMove(e) {
+  if (globalResizing) return;
+  if (pendingDrag && !dragging) {
+    if (Math.abs(e.clientX - pendingDrag.startX) > 4 || Math.abs(e.clientY - pendingDrag.startY) > 4) {
+      dragging = { id: pendingDrag.id, offsetX: pendingDrag.offsetX, offsetY: pendingDrag.offsetY };
+      pendingDrag = null;
+    }
+    return;
+  }
+  if (!dragging) return;
+  const canvas = document.getElementById("furniture-canvas");
+  const rect   = canvas.getBoundingClientRect();
+  const pl     = state.placedFurniture.find(p => p.id === dragging.id);
+  if (!pl) return;
+  pl.x = Math.max(0, Math.min(rect.width  - pl.w, e.clientX - rect.left - dragging.offsetX));
+  pl.y = Math.max(0, Math.min(rect.height - pl.h, e.clientY - rect.top  - dragging.offsetY));
+  // Move the DOM element directly for performance
+  const el = document.querySelector(`.furniture-item[data-id="${dragging.id}"]`);
+  if (el) { el.style.left = pl.x + "px"; el.style.top = pl.y + "px"; }
+}
+
+function onCanvasMouseUp() {
+  if (globalResizing) return;
+  pendingDrag = null;
+  if (dragging) { saveState(); dragging = null; }
+}
+
+// ── RESIZE ──
+
+function startResize(e, id, corner) {
+  e.stopPropagation(); e.preventDefault();
+  globalResizing = true;
+  const pl = state.placedFurniture.find(p => p.id === id);
+  const sx = e.clientX, sy = e.clientY;
+  const sw = pl.w, sh = pl.h, sxi = pl.x, syi = pl.y;
+
+  function onMove(ev) {
+    const dx = ev.clientX - sx, dy = ev.clientY - sy;
+    let nw = sw, nh = sh, nx = sxi, ny = syi;
+    if(corner==="se"){ nw=Math.max(MIN_SIZE,Math.min(MAX_SIZE,sw+dx)); nh=Math.max(MIN_SIZE,Math.min(MAX_SIZE,sh+dy)); }
+    else if(corner==="sw"){ nw=Math.max(MIN_SIZE,Math.min(MAX_SIZE,sw-dx)); nh=Math.max(MIN_SIZE,Math.min(MAX_SIZE,sh+dy)); nx=sxi+(sw-nw); }
+    else if(corner==="ne"){ nw=Math.max(MIN_SIZE,Math.min(MAX_SIZE,sw+dx)); nh=Math.max(MIN_SIZE,Math.min(MAX_SIZE,sh-dy)); ny=syi+(sh-nh); }
+    else if(corner==="nw"){ nw=Math.max(MIN_SIZE,Math.min(MAX_SIZE,sw-dx)); nh=Math.max(MIN_SIZE,Math.min(MAX_SIZE,sh-dy)); nx=sxi+(sw-nw); ny=syi+(sh-nh); }
+    pl.x=nx; pl.y=ny; pl.w=nw; pl.h=nh;
+    const el = document.querySelector(`.furniture-item[data-id="${id}"]`);
+    if(el){ el.style.left=nx+"px"; el.style.top=ny+"px"; el.style.width=nw+"px"; el.style.height=nh+"px"; }
+    const sizeEl = el && el.querySelector(".ctrl-size");
+    if(sizeEl) sizeEl.textContent = `${Math.round(nw)}×${Math.round(nh)}`;
+  }
+  function onUp() {
+    globalResizing = false;
+    saveState();
+    window.removeEventListener("mousemove", onMove);
+    window.removeEventListener("mouseup",   onUp);
+  }
+  window.addEventListener("mousemove", onMove);
+  window.addEventListener("mouseup",   onUp);
+}
+
+// ── INVENTORY ──
+
+let invOpen = true;
+
+function renderInventory() {
+  const container = document.getElementById("inventory-items");
+  container.innerHTML = "";
+
+  // Filter by active category
+  const filtered = FURNITURE.filter(item => item.cat === activeCategory);
+
+  filtered.forEach(item => {
+    const unlocked = isUnlocked(item);
+    const inRoom   = state.placedFurniture.some(p => p.id === item.id);
+    const el       = document.createElement("div");
+    el.className   = "inv-item" + (unlocked ? " unlocked" : " locked") + (inRoom ? " in-room" : "");
+
+    const img = document.createElement("img");
+    img.src = item.src; img.alt = item.label;
+    el.appendChild(img);
+
+    const name = document.createElement("div");
+    name.className = "inv-name";
+    name.textContent = item.label;
+    el.appendChild(name);
+
+    if (!unlocked) {
+        // greyed out, nothing added
+      } else if (!inRoom) {
+        el.addEventListener("click", () => addToRoom(item.id));
+      } else {
+        const dot = document.createElement("div");
+        dot.className = "inv-dot";
+        el.appendChild(dot);
+      }
+
+    container.appendChild(el);
+  });
+
+  // Update unlock counter
+    const allLocked = FURNITURE.filter(f => !isUnlocked(f));
+    const nextLocked = allLocked.sort((a, b) => a.unlockAt - b.unlockAt)[0];
+    const counter    = document.getElementById("inv-unlock-counter");
+    if (counter) {
+      counter.textContent = nextLocked
+        ? `${nextLocked.unlockAt - totalEntries()} more Bubbles to unlock`
+        : "All items unlocked";
+  }
+}
+
+function setupInventoryToggle() {
+  // Tab clicks
+      document.querySelectorAll(".inv-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".inv-tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          activeCategory = tab.dataset.cat;
+          clearCategoryAlert(activeCategory);
+          renderInventory();
+        });
+      });
+
+document.getElementById("inv-arrow-left").addEventListener("click", () => {
+  document.getElementById("inventory-items").scrollBy({ left: -300, behavior: "smooth" });
+});
+
+document.getElementById("inv-arrow-right").addEventListener("click", () => {
+  document.getElementById("inventory-items").scrollBy({ left: 300, behavior: "smooth" });
+});
+
+  // Trigger button opens and closes
+  document.getElementById("inv-trigger").addEventListener("click", () => {
+    document.getElementById("top-inventory").classList.toggle("open");
+  });
+
+  // Click outside closes it
+document.addEventListener("click", e => {
+  const inv     = document.getElementById("top-inventory");
+  const trigger = document.getElementById("inv-trigger");
+  // Don't close inventory if tutorial is on the inventory step
+  if (tutorialActive && tutorialStep === 2) return;
+  if (!inv.contains(e.target) && !trigger.contains(e.target)) {
+    inv.classList.remove("open");
+  }
+});
+}
+
+function scaleRoom() {
+  const scene    = document.getElementById("room-scene");
+  const viewport = document.getElementById("room-viewport");
+  const inv      = document.getElementById("inventory");
+  if (!scene || !viewport) return;
+
+  const invHeight  = inv ? inv.getBoundingClientRect().height : 0;
+  const availableW = window.innerWidth;
+  const availableH = window.innerHeight - invHeight;
+
+  const scaleX = availableW / 1200;
+  const scaleY = availableH / 700;
+  const scale  = Math.max(scaleX, scaleY);
+
+  scene.style.transform = `scale(${scale})`;
+}
+
+// ── UNLOCK TOAST ──
+
+    let toastTimer;
+        function showToast(item) {
+          const el   = document.getElementById("unlock-toast");
+          const text = document.getElementById("toast-text");
+
+          let name;
+          if (item.multiLabel) {
+            name = item.multiLabel;
+          } else if (item.isDiy) {
+            name = "DIY Workshop slot";
+          } else if (item.cat) {
+            name = item.cat.charAt(0).toUpperCase() + item.cat.slice(1);
+          } else {
+            name = item.label || "New item";
+          }
+
+          text.innerHTML = `<strong>${name}</strong> unlocked!`;
+          el.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => el.classList.remove("show"), 3200);
+
+          // Alert the relevant category tabs
+          FURNITURE.filter(f => f.unlockAt <= totalEntries() && f.unlockAt > totalEntries() - 1)
+            .forEach(f => {
+              if (f.cat) addCategoryAlert(f.cat);
+            });
+        }
+
+    function addCategoryAlert(cat) {
+      const tab = document.querySelector(`.inv-tab[data-cat="${cat}"]`);
+      if (!tab) return;
+
+      // Don't add duplicate
+      if (tab.querySelector(".cat-alert")) return;
+
+      const badge = document.createElement("span");
+      badge.className = "cat-alert";
+      badge.textContent = "!";
+      tab.appendChild(badge);
+    }
+
+    function clearCategoryAlert(cat) {
+      const tab = document.querySelector(`.inv-tab[data-cat="${cat}"]`);
+      if (!tab) return;
+      const badge = tab.querySelector(".cat-alert");
+      if (badge) badge.remove();
+    }
+
+// ═══════════════════════════════════════════════════════════════════
+// CULTURE ROOM
+// ═══════════════════════════════════════════════════════════════════
+
+let activeCulture = "culture1";  // which culture is currently shown
+let canvasDims    = { w: 800, h: 600 };
+let dropOpen      = false;
+let selectedTopic = null;        // topic chosen from dropdown, triggers entry modal
+let viewingEntry  = null;        // entry shown in view modal
+
+function renderCultureRoom(which) {
+  activeCulture = which;
+  const cd    = state[which];
+  const aRgb  = hexToRgb(cd.color);
+
+  // Header
+  document.getElementById("culture-name-display").textContent = cd.name || "Identity";
+  document.getElementById("culture-name-display").style.color  = cd.color;
+  document.getElementById("culture-back-btn").style.borderColor = `rgba(${aRgb},0.35)`;
+  document.getElementById("culture-back-btn").style.color       = cd.color;
+          const backBtn = document.getElementById("culture-back-btn");
+        backBtn.addEventListener("mouseenter", () => {
+          backBtn.style.background = cd.color;
+          backBtn.style.color      = "#fff";
+          backBtn.style.borderColor = cd.color;
+        });
+        backBtn.addEventListener("mouseleave", () => {
+          backBtn.style.background  = "transparent";
+          backBtn.style.color       = cd.color;
+          backBtn.style.borderColor = `rgba(${aRgb},0.35)`;
+        });
+  const cnt = cd.entries.length;
+  document.getElementById("culture-bubble-count").textContent = `${cnt} ${cnt===1?"bubble":"bubbles"}`;
+
+  // Canvas aura
+  const aura = document.getElementById("culture-aura");
+const circleSrc = COLOR_CIRCLES[cd.color];
+if (circleSrc) {
+  aura.style.background = "none";
+  aura.innerHTML = `<img src="${circleSrc}" style="width:100%;height:100%;object-fit:contain;pointer-events:none;" />`;
+} else {
+  aura.style.background = `radial-gradient(ellipse,rgba(${aRgb},0.22) 0%,rgba(${aRgb},0.07) 45%,transparent 72%)`;
+}
+
+  // Measure canvas
+  const canvas = document.getElementById("culture-canvas");
+  canvasDims = { w: canvas.offsetWidth || 800, h: canvas.offsetHeight || 600 };
+  const size  = Math.min(canvasDims.w, canvasDims.h) * 0.85;
+  aura.style.width  = size + "px";
+  aura.style.height = (size * 0.76) + "px";
+
+  // Center label
+  const cl = document.getElementById("culture-center-label");
+  cl.textContent  = cd.name || "?";
+  cl.style.color  = "#ffffff";
+  cl.style.fontSize = Math.max(20, Math.min(40, canvasDims.w / 20)) + "px";
+  cl.style.textShadow =  `0 2px 12px rgba(0,0,0,0.3)`;
+
+  // Add button
+  const btn = document.getElementById("culture-add-btn");
+  btn.style.background = `rgba(${aRgb},0.15)`;
+  btn.style.borderColor = `rgba(${aRgb},0.5)`;
+  btn.style.color       = cd.color;
+  btn.style.boxShadow   = `0 6px 24px rgba(${aRgb},0.28)`;
+  btn.style.transform   = "rotate(0deg)";
+
+  // Topic dropdown
+  buildTopicDropdown(cd.color, aRgb);
+
+  // Empty hint
+  const hint = document.getElementById("culture-empty-hint");
+  hint.style.display = cd.entries.length === 0 ? "flex" : "none";
+  if (cd.entries.length === 0) {
+    hint.querySelector("p").style.color = `rgba(${aRgb},0.45)`;
+  }
+
+  // Bubbles
+  renderBubbles(which);
+
+  // Name modal if no name yet
+  if (!cd.name) openNameModal(which);
+}
+
+function renderBubbles(which) {
+  const cd      = state[which];
+  const aRgb    = hexToRgb(cd.color);
+  const cont    = document.getElementById("culture-bubbles-container");
+  cont.innerHTML = "";
+
+  const CENTER_CLEAR = 110;
+  cd.entries.forEach((entry, i) => {
+    const topic = TOPICS.find(t => t.id === entry.topicId) || TOPICS[0];
+    const golden = 2.399963;
+    const r     = CENTER_CLEAR + Math.sqrt(i + 0.5) * Math.min(canvasDims.w, canvasDims.h) * 0.13;
+    const theta = i * golden;
+    const cx = canvasDims.w / 2, cy = canvasDims.h / 2;
+    const pad = 80;
+    const posX = Math.max(pad, Math.min(canvasDims.w - pad, cx + r * Math.cos(theta)));
+    const posY = Math.max(pad, Math.min(canvasDims.h - pad, cy + r * Math.sin(theta)));
+
+    // Unique float keyframes
+    const seed = i * 137.508;
+    const dur  = 7 + seededRand(seed) * 7;
+    const dx   = 14 + seededRand(seed+1) * 20;
+    const dy   = 10 + seededRand(seed+2) * 16;
+    const dly  = -(seededRand(seed+3) * dur);
+    const animName = `bubble_float_${i}`;
+
+    // Inject keyframes
+    if (!document.getElementById(`kf-${animName}`)) {
+      const style = document.createElement("style");
+      style.id = `kf-${animName}`;
+      style.textContent = `@keyframes ${animName}{0%{transform:translate(0,0)}25%{transform:translate(${dx}px,-${dy}px)}50%{transform:translate(${Math.round(dx*.3)}px,${Math.round(dy*.7)}px)}75%{transform:translate(-${Math.round(dx*.5)}px,-${Math.round(dy*.4)}px)}100%{transform:translate(0,0)}}`;
+      document.head.appendChild(style);
+    }
+
+    const posEl = document.createElement("div");
+    posEl.className = "bubble-pos";
+    posEl.style.cssText = `left:${posX-58}px;top:${posY-58}px`;
+
+    const wrap = document.createElement("div");
+    wrap.className = "bubble-wrap";
+    wrap.style.animation = `${animName} ${dur}s ease-in-out ${dly}s infinite`;
+    wrap.style.willChange = "transform";
+
+    const glow = document.createElement("div");
+    glow.className = "bubble-glow";
+    glow.style.background = `radial-gradient(circle,rgba(${aRgb},0.16) 0%,transparent 70%)`;
+
+    const circle = document.createElement("div");
+    circle.className = "bubble-circle";
+    circle.style.border  = `2px solid rgba(${aRgb},0.32)`;
+    circle.style.boxShadow = `0 6px 24px rgba(${aRgb},0.18),0 2px 8px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,1)`;
+
+    circle.innerHTML = `
+      <div class="bubble-topic" style="color:rgb(${aRgb})">${topic.icon} ${topic.label}</div>
+      <div class="bubble-title">${entry.title || topic.label}</div>
+      <div class="bubble-date">${formatDate(entry.date)}</div>
+      <button class="bubble-del">✕</button>
+    `;
+
+    circle.querySelector(".bubble-del").addEventListener("click", e => {
+      e.stopPropagation();
+      deleteEntry(which, entry.id);
+    });
+
+    wrap.addEventListener("click", () => openViewModal(entry, cd.color));
+
+    wrap.appendChild(glow);
+    wrap.appendChild(circle);
+    posEl.appendChild(wrap);
+    cont.appendChild(posEl);
+  });
+}
+
+function buildTopicDropdown(color, aRgb) {
+  const opts = document.getElementById("topic-options");
+  opts.innerHTML = "";
+  TOPICS.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "topic-option";
+    div.innerHTML = `<span class="topic-icon">${t.icon}</span><span>${t.label}</span>`;
+    div.addEventListener("mouseenter", () => div.style.background = `rgba(${aRgb},0.09)`);
+    div.addEventListener("mouseleave", () => div.style.background = "transparent");
+    div.addEventListener("click", () => {
+          // Hide tutorial box before closing drop so it doesn't flash visible
+          const tutBox = document.getElementById("tutorial-box");
+          if (tutBox) tutBox.style.visibility = "hidden";
+          closeDrop();
+          openEntryModal(t, color, state[activeCulture].name);
+        });
+    opts.appendChild(div);
+  });
+}
+
+    function closeDrop() {
+      dropOpen = false;
+      document.getElementById("topic-dropdown").classList.remove("open");
+      const btn = document.getElementById("culture-add-btn");
+      btn.style.transform = "rotate(0deg)";
+      const cd   = state[activeCulture];
+      const aRgb = hexToRgb(cd.color);
+      btn.style.background = `rgba(${aRgb},0.15)`;
+      btn.style.color = cd.color;
+
+    }
+
+
+function deleteEntry(which, id) {
+  state[which].entries = state[which].entries.filter(e => e.id !== id);
+  saveState();
+  renderCultureRoom(which);
+  updateEntryCounter();
+  renderInventory();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ENTRY MODAL
+// ═══════════════════════════════════════════════════════════════════
+
+let entryModalTopic = null;
+
+function openEntryModal(topic, color, cultureName) {
+  entryModalTopic = topic;
+  const aRgb = hexToRgb(color);
+  const modal = document.getElementById("entry-modal");
+
+  document.getElementById("entry-modal-icon").textContent = topic.icon;
+  document.getElementById("entry-modal-icon").style.background = `rgba(${aRgb},0.1)`;
+  document.getElementById("entry-modal-icon").style.border = `1.5px solid rgba(${aRgb},0.25)`;
+  document.getElementById("entry-modal-title").textContent = topic.label;
+  document.getElementById("entry-modal-title").style.color  = `rgb(${aRgb})`;
+  document.getElementById("entry-modal-sub").textContent   = cultureName || "Your culture";
+  document.getElementById("entry-modal-divider").style.background = `linear-gradient(90deg,transparent,rgba(${aRgb},0.25),transparent)`;
+
+  document.getElementById("entry-title").value = "";
+  document.getElementById("entry-text").value  = "";
+  document.getElementById("entry-text").placeholder = topic.placeholder;
+  document.getElementById("entry-date").value  = new Date().toISOString().slice(0,10);
+  document.getElementById("entry-char-count").textContent = "Write freely — no rules";
+  document.getElementById("entry-save-btn").disabled = true;
+  document.getElementById("entry-save-btn").style.background = "#eee8de";
+  document.getElementById("entry-save-btn").style.color = "#c0b090";
+
+  // Focus ring colors via inline
+  ["entry-title","entry-date","entry-text"].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.borderColor = "#e4ddd0";
+    el.onfocus = () => el.style.borderColor = color;
+    el.onblur  = () => el.style.borderColor = "#e4ddd0";
+  });
+
+  modal.style.display = "flex";
+
+    const tutBox = document.getElementById("tutorial-box");
+      if (tutBox) {
+        tutBox.style.visibility = "hidden";
+        tutBox.style.pointerEvents = "none";
+        tutBox.style.opacity = "0";
+      }
+
+}
+
+function closeEntryModal() {
+  document.getElementById("entry-modal").style.display = "none";
+
+  const tutBox = document.getElementById("tutorial-box");
+      if (tutBox) {
+        tutBox.style.visibility = "visible";
+        tutBox.style.pointerEvents = "all";
+        tutBox.style.opacity = "1";
+      }
+}
+// ═══════════════════════════════════════════════════════════════════
+// VIEW MODAL
+// ═══════════════════════════════════════════════════════════════════
+
+function openViewModal(entry, color) {
+  viewingEntry = entry;
+  const topic = TOPICS.find(t => t.id === entry.topicId) || TOPICS[0];
+  const aRgb  = hexToRgb(color);
+
+  document.getElementById("view-topic-icon").textContent  = topic.icon;
+  document.getElementById("view-topic-label").textContent = topic.label;
+  document.getElementById("view-topic-label").style.color  = `rgb(${aRgb})`;
+  document.getElementById("view-title").textContent = entry.title || topic.label;
+  document.getElementById("view-date").textContent  = formatDate(entry.date);
+  document.getElementById("view-divider").style.background = `linear-gradient(90deg,transparent,rgba(${aRgb},0.2),transparent)`;
+  document.getElementById("view-text").textContent  = entry.text;
+  document.getElementById("view-modal").style.display = "flex";
+}
+
+function closeViewModal() {
+  document.getElementById("view-modal").style.display = "none";
+  viewingEntry = null;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// NAME MODAL
+// ═══════════════════════════════════════════════════════════════════
+
+
+// ═══════════════════════════════════════════════════════════════════
+// EVENT WIRING
+// ═══════════════════════════════════════════════════════════════════
+
+function setupEvents() {
+   console.log("setupEvents started");
+
+  const ids = [
+    "door-left", "door-right", "culture-back-btn",
+    "culture-rename-btn", "culture-add-btn", "culture-add-btn-wrap",
+    "topic-dropdown", "entry-modal", "entry-modal-close",
+    "entry-text", "entry-save-btn", "view-modal", "view-modal-close",
+    "view-delete-btn", "rename-modal", "rename-input", "rename-save-btn",
+    "inv-trigger"
+  ];
+
+  ids.forEach(id => {
+    if (!document.getElementById(id)) {
+      console.error("MISSING ELEMENT:", id);
+    }
+  });
+
+  document.getElementById("room-scene").addEventListener("mousedown", function(e) {
+  if (!e.target.closest(".furniture-item")) {
+    selectFurniture(null);
+  }
+});
+
+document.getElementById("reset-tutorial-btn").addEventListener("click", () => {
+  localStorage.removeItem("saferoom_tutorial_done");
+  location.reload();
+});
+
+  // Doors
+  document.getElementById("door-left").addEventListener("click",  () => showPage("culture1"));
+  document.getElementById("door-right").addEventListener("click", () => showPage("culture2"));
+
+  // Culture back
+  document.getElementById("culture-back-btn").addEventListener("click", () => showPage("room"));
+
+
+  // Culture add button (dropdown toggle)
+        document.getElementById("culture-add-btn").addEventListener("click", () => {
+        dropOpen = !dropOpen;
+        document.getElementById("topic-dropdown").classList.toggle("open", dropOpen);
+        const cd  = state[activeCulture];
+        const btn = document.getElementById("culture-add-btn");
+        if (dropOpen) {
+          btn.style.background = cd.color;
+          btn.style.color = "#fff";
+          btn.style.transform = "rotate(45deg)";
+          // Hide tutorial box so dropdown is visible
+          const tutBox = document.getElementById("tutorial-box");
+          if (tutBox) tutBox.style.visibility = "hidden";
+        } else {
+          closeDrop();
+          // Restore tutorial box
+          const tutBox = document.getElementById("tutorial-box");
+          if (tutBox) tutBox.style.visibility = "visible";
+        }
+      });
+document.getElementById("culture-rename-btn").addEventListener("click", openRenameModal);
+document.getElementById("rename-modal").addEventListener("click", closeRenameModal);
+
+document.getElementById("rename-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") saveRename();
+});
+
+  // Close dropdown on outside click
+  document.addEventListener("click", e => {
+    const wrap = document.getElementById("culture-add-btn-wrap");
+    if (!wrap.contains(e.target) && dropOpen) closeDrop();
+  });
+
+  // Entry modal events
+  document.getElementById("entry-modal").addEventListener("click", closeEntryModal);
+  document.getElementById("entry-modal-close").addEventListener("click", closeEntryModal);
+
+  document.getElementById("entry-text").addEventListener("input", function() {
+    const len = this.value.length;
+    const btn = document.getElementById("entry-save-btn");
+    document.getElementById("entry-char-count").textContent = len > 0 ? `${len} characters` : "Write freely — no rules";
+    btn.disabled = len === 0;
+    const cd = state[activeCulture];
+    btn.style.background = len > 0 ? `linear-gradient(135deg,${cd.color},${lighten(cd.color,-25)})` : "#eee8de";
+    btn.style.color = len > 0 ? "#fff" : "#c0b090";
+  });
+
+  document.getElementById("entry-save-btn").addEventListener("click", () => {
+    const text  = document.getElementById("entry-text").value.trim();
+    const title = document.getElementById("entry-title").value.trim();
+    const date  = document.getElementById("entry-date").value;
+    if (!text || !entryModalTopic) return;
+
+    const prevTotal = totalEntries();
+    state[activeCulture].entries.push({
+      id: uid(), topicId: entryModalTopic.id,
+      title, text,
+      date: date ? new Date(date).toISOString() : new Date().toISOString(),
+    });
+    saveState();
+    closeEntryModal();
+    renderCultureRoom(activeCulture);
+    updateEntryCounter();
+    renderInventory();
+
+    // Unlock toast
+const newTotal = totalEntries();
+if (newTotal > prevTotal) {
+
+  const toasts = [];
+
+    const unlockedCats = new Set();
+    FURNITURE.filter(f => f.unlockAt <= newTotal && f.unlockAt > prevTotal)
+      .forEach(f => {
+        const name = f.cat ? f.cat.charAt(0).toUpperCase() + f.cat.slice(1) : f.label;
+        unlockedCats.add(name);
+      });
+    unlockedCats.forEach(name => toasts.push(name));
+
+  const prevDiySlots = Math.min(DIY_TOTAL_SLOTS, DIY_BASE_UNLOCKED + Math.floor(prevTotal / DIY_UNLOCK_EVERY));
+  const newDiySlots  = Math.min(DIY_TOTAL_SLOTS, DIY_BASE_UNLOCKED + Math.floor(newTotal  / DIY_UNLOCK_EVERY));
+  if (newDiySlots > prevDiySlots) toasts.push("DIY Workshop slot");
+
+  if (toasts.length > 0) {
+    showToast({ multiLabel: toasts.join(", ") });
+  }
+
+}
+  });
+
+  // View modal events
+  document.getElementById("view-modal").addEventListener("click", closeViewModal);
+  document.getElementById("view-modal-close").addEventListener("click", closeViewModal);
+  document.getElementById("view-delete-btn").addEventListener("click", () => {
+    if (viewingEntry) { deleteEntry(activeCulture, viewingEntry.id); }
+    closeViewModal();
+  });
+
+
+  // Keyboard Escape
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    if (document.getElementById("rename-modal").style.display === "flex") {closeRenameModal(); return;}
+    if (document.getElementById("entry-modal").style.display !== "none") { closeEntryModal(); return; }
+    if (document.getElementById("view-modal").style.display  !== "none") { closeViewModal();  return; }
+    if (dropOpen) closeDrop();
+  });
+
+  // Canvas resize observer for culture room
+  const resizeObserver = new ResizeObserver(() => {
+    if (currentPage !== "room") {
+      const canvas = document.getElementById("culture-canvas");
+      canvasDims = { w: canvas.offsetWidth || 800, h: canvas.offsetHeight || 600 };
+      renderBubbles(activeCulture);
+    }
+  });
+  resizeObserver.observe(document.getElementById("culture-canvas"));
+}
+
+// ══════════════════════════════════════════
+// DIY WORKSHOP
+// ══════════════════════════════════════════
+
+const DIY_TOTAL_SLOTS   = 15;    // max drawings ever
+const DIY_UNLOCK_EVERY  = 4;    // unlock a new slot every 4 bubbles
+const DIY_BASE_UNLOCKED = 0;    // start with 1 slot unlocked
+
+let diyCanvas, diyCtx;
+let diyDrawing   = false;
+let diyTool      = "pen";
+let diyBrushSize = 3;
+let diyHasDrawn  = false;
+
+function diyUnlockedSlots() {
+  return Math.min(
+    DIY_TOTAL_SLOTS,
+    DIY_BASE_UNLOCKED + Math.floor(totalEntries() / DIY_UNLOCK_EVERY)
+  );
+}
+
+function initDIY() {
+  diyCanvas = document.getElementById("diy-canvas");
+  diyCtx    = diyCanvas.getContext("2d");
+
+  // Drawing events — mouse
+  diyCanvas.addEventListener("mousedown",  diyStartDraw);
+  diyCanvas.addEventListener("mousemove",  diyDraw);
+  diyCanvas.addEventListener("mouseup",    diyStopDraw);
+  diyCanvas.addEventListener("mouseleave", diyStopDraw);
+
+  // Drawing events — touch
+  diyCanvas.addEventListener("touchstart",  e => { e.preventDefault(); diyStartDraw(e.touches[0]); }, { passive: false });
+  diyCanvas.addEventListener("touchmove",   e => { e.preventDefault(); diyDraw(e.touches[0]); },      { passive: false });
+  diyCanvas.addEventListener("touchend",    diyStopDraw);
+
+  // Tool buttons
+    document.querySelectorAll(".diy-tool").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".diy-tool").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        diyTool = btn.dataset.tool;
+      });
+    });
+
+  // Brush size
+  document.getElementById("diy-brush-size").addEventListener("input", function() {
+    diyBrushSize = parseInt(this.value);
+  });
+
+  // Clear
+  document.getElementById("diy-clear").addEventListener("click", diyClear);
+
+  // Save
+  document.getElementById("diy-save").addEventListener("click", diySaveDrawing);
+
+  // Close
+  document.getElementById("diy-close").addEventListener("click", closeDIY);
+
+  // Trigger button
+  document.getElementById("diy-trigger").addEventListener("click", openDIY);
+}
+
+function openDIY() {
+  document.getElementById("diy-modal").classList.add("open");
+  renderDIYSidebar();
+  diyClear();
+}
+
+function closeDIY() {
+  document.getElementById("diy-modal").classList.remove("open");
+}
+
+function diyGetPos(e) {
+  const rect = diyCanvas.getBoundingClientRect();
+  const scaleX = diyCanvas.width  / rect.width;
+  const scaleY = diyCanvas.height / rect.height;
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top)  * scaleY,
+  };
+}
+
+function diyStartDraw(e) {
+  diyDrawing = true;
+  const pos  = diyGetPos(e);
+  diyCtx.beginPath();
+  diyCtx.moveTo(pos.x, pos.y);
+
+  // Hide hint on first stroke
+  if (!diyHasDrawn) {
+    diyHasDrawn = true;
+    document.getElementById("diy-canvas-hint").style.opacity = "0";
+  }
+}
+
+function diyDraw(e) {
+  if (!diyDrawing) return;
+  const pos = diyGetPos(e);
+
+      if (diyTool === "eraser") {
+          diyCtx.globalCompositeOperation = "destination-out";
+          diyCtx.strokeStyle = "rgba(0,0,0,1)";
+          diyCtx.lineWidth   = diyBrushSize * 4;
+        } else if (diyTool === "white") {
+          diyCtx.globalCompositeOperation = "source-over";
+          diyCtx.strokeStyle = "#ffffff";
+          diyCtx.lineWidth   = diyBrushSize;
+        } else {
+          diyCtx.globalCompositeOperation = "source-over";
+          diyCtx.strokeStyle = "#1a1008";
+          diyCtx.lineWidth   = diyBrushSize;
+        }
+
+        diyCtx.lineCap  = "round";
+        diyCtx.lineJoin = "round";
+        diyCtx.lineTo(pos.x, pos.y);
+        diyCtx.stroke();
+        diyCtx.beginPath();
+        diyCtx.moveTo(pos.x, pos.y);
+
+        document.getElementById("diy-save").disabled = false;
+      }
+
+function diyStopDraw() {
+  diyDrawing = false;
+  diyCtx.beginPath();
+}
+
+function diyClear() {
+  diyCtx.clearRect(0, 0, diyCanvas.width, diyCanvas.height);
+  diyCtx.fillStyle = "#d0d0d0";
+  diyCtx.fillRect(0, 0, diyCanvas.width, diyCanvas.height);
+  diyHasDrawn = false;
+  document.getElementById("diy-canvas-hint").style.opacity = "1";
+  document.getElementById("diy-save").disabled = true;
+}
+
+async function diySaveDrawing() {
+  const unlocked = diyUnlockedSlots();
+  const existing = state.diyDrawings ? state.diyDrawings.length : 0;
+
+  if (existing >= unlocked) {
+    alert(`Draw ${DIY_UNLOCK_EVERY - (totalEntries() % DIY_UNLOCK_EVERY)} more bubbles to unlock a new slot.`);
+    return;
+  }
+
+  const drawingData  = diyCtx.getImageData(0, 0, diyCanvas.width, diyCanvas.height);
+  const exportCanvas = document.createElement("canvas");
+  exportCanvas.width  = diyCanvas.width;
+  exportCanvas.height = diyCanvas.height;
+  const exportCtx  = exportCanvas.getContext("2d");
+  const exportData = exportCtx.createImageData(drawingData);
+
+  for (let i = 0; i < drawingData.data.length; i += 4) {
+    const r = drawingData.data[i];
+    const g = drawingData.data[i + 1];
+    const b = drawingData.data[i + 2];
+    const a = drawingData.data[i + 3];
+    const isBackground = r >= 200 && r <= 220
+                      && g >= 200 && g <= 220
+                      && b >= 200 && b <= 220
+                      && Math.abs(r-g) < 10
+                      && Math.abs(g-b) < 10
+                      && a === 255;
+    if (isBackground) {
+      exportData.data[i] = exportData.data[i+1] = exportData.data[i+2] = exportData.data[i+3] = 0;
+    } else {
+      exportData.data[i]   = r;
+      exportData.data[i+1] = g;
+      exportData.data[i+2] = b;
+      exportData.data[i+3] = a;
+    }
+  }
+  exportCtx.putImageData(exportData, 0, 0);
+
+  const dataUrl = exportCanvas.toDataURL("image/png");
+  const id      = "diy_" + uid();
+  const name    = `Sketch ${existing + 1}`;
+
+  // Save image to IndexedDB — not localStorage
+  await saveDiyImage(id, dataUrl);
+
+  if (!state.diyDrawings) state.diyDrawings = [];
+  state.diyDrawings.push({ id, name });
+  saveState();
+
+state.placedFurniture.push({
+  id, label: name, flipped: false,
+  x: 300 + Math.random() * 200,
+  y: 150 + Math.random() * 150,
+  w: 160, h: 160,
+});
+  saveState();
+  renderFurnitureCanvas();
+  renderDIYSidebar();
+  diyClear();
+}
+
+
+async function diyDeleteDrawing(id) {
+  state.diyDrawings     = (state.diyDrawings || []).filter(d => d.id !== id);
+  state.placedFurniture = state.placedFurniture.filter(p => p.id !== id);
+  await deleteDiyImage(id);
+  saveState();
+  renderFurnitureCanvas();
+  renderDIYSidebar();
+}
+
+async function renderDIYSidebar() {
+  const drawings  = state.diyDrawings || [];
+  const unlocked  = diyUnlockedSlots();
+  const list      = document.getElementById("diy-saved-list");
+  const lockedEl  = document.getElementById("diy-locked-slots");
+  const slotsInfo = document.getElementById("diy-slots-info");
+
+  slotsInfo.textContent = `${drawings.length} / ${unlocked}`;
+  list.innerHTML    = "";
+  lockedEl.innerHTML = "";
+
+  for (const d of drawings) {
+    const src = await getDiyImage(d.id);
+    const row = document.createElement("div");
+    row.className = "diy-saved-item";
+
+    const img   = document.createElement("img");
+    img.src     = src;
+    img.alt     = d.name;
+
+    const label = document.createElement("span");
+    label.textContent = d.name;
+
+const delBtn       = document.createElement("button");
+delBtn.className   = "diy-item-del";
+delBtn.textContent = "✕";
+delBtn.title       = "Delete drawing permanently";
+delBtn.addEventListener("click", () => diyDeleteDrawing(d.id));
+
+// Only show re-add button if the piece is not currently in the room
+const alreadyInRoom = state.placedFurniture.some(p => p.id === d.id);
+if (!alreadyInRoom) {
+  const addBtn       = document.createElement("button");
+  addBtn.className   = "diy-item-del";
+  addBtn.textContent = "+";
+  addBtn.title       = "Add back to room";
+  addBtn.style.color = "#000000";
+  addBtn.addEventListener("click", async () => {
+    state.placedFurniture.push({
+      id:      d.id,
+      label:   d.name,
+      flipped: false,
+      x: 300 + Math.random() * 200,
+      y: 150 + Math.random() * 150,
+      w: 160,
+      h: 160,
+    });
+    saveState();
+    await renderFurnitureCanvas();
+    renderDIYSidebar();
+  });
+  row.appendChild(addBtn);
+}
+
+row.appendChild(img);
+row.appendChild(label);
+row.appendChild(delBtn);
+list.appendChild(row);
+  }
+
+  const lockedCount = Math.max(0, unlocked - drawings.length);
+  const totalLocked = DIY_TOTAL_SLOTS - unlocked;
+
+  for (let i = 0; i < lockedCount; i++) {
+      const slot = document.createElement("div");
+      slot.className = "diy-locked-slot";
+      slot.innerHTML = `<span>Empty slot — draw something!</span>`;
+      lockedEl.appendChild(slot);
+  }
+
+  for (let i = 0; i < totalLocked; i++) {
+    const needed = (unlocked - DIY_BASE_UNLOCKED + i + 1) * DIY_UNLOCK_EVERY;
+    const slot   = document.createElement("div");
+    slot.className = "diy-locked-slot";
+    slot.innerHTML = `<span>⊖ Unlock at ${needed} bubbles</span>`;
+    lockedEl.appendChild(slot);
+  }
+}
+let renderPending = false;
+
+// ══════════════════════════════════════════
+// TUTORIAL
+// ══════════════════════════════════════════
+
+const TUTORIAL_STEPS = [
+  // Step 1 — welcome, click anywhere to continue
+  {
+    text: `Welcome to your SafeRoom — you will furnish this room to your customization. <em>Make yourself at home!</em>`,
+    highlight: null,
+    page: "room",
+    waitForClick: null,
+  },
+  // Step 2 — user must click the inventory button
+  {
+    text: `At the top left is your <strong>inventory button.</strong> Click it to open your furniture shelf.`,
+    highlight: "#inv-trigger",
+    highlightShape: "round",
+    page: "room",
+    waitForClick: "#inv-trigger",
+  },
+  // Step 3 — inventory is now open, click to continue
+  {
+    text: `This is your <strong>furniture inventory</strong> — full of things to fill your SafeRoom. There is also a counter at the top right to remind you of how many bubbles you need to unlock an item. <em>All furniture pieces need to be unlocked.</em>`,
+    highlight: "#top-inventory",
+    page: "room",
+    waitForClick: null,
+    onEnter: () => {
+      document.getElementById("top-inventory").classList.add("open");
+    },
+  },
+  // Step 4 — user must click DIY button
+  {
+    text: `Next to that button is your <strong>DIY Workshop button.</strong> Click it to open your workshop.`,
+    highlight: "#diy-trigger",
+    highlightShape: "round",
+    page: "room",
+    waitForClick: "#diy-trigger",
+    onEnter: () => {
+      document.getElementById("top-inventory").classList.remove("open");
+    },
+  },
+  // Step 5 — DIY modal is open, click to continue
+  {
+    text: `And this is your <strong>DIY Workshop</strong> — allowing you to draw anything to furnish your SafeRoom. <em>All DIY pieces need to be unlocked.</em>`,
+    highlight: "#diy-box",
+    page: "room",
+    waitForClick: null,
+    onEnter: () => {
+      document.getElementById("diy-modal").classList.add("open");
+      renderDIYSidebar();
+      diyClear();
+    },
+    onLeave: () => {
+      document.getElementById("diy-modal").classList.remove("open");
+    },
+  },
+  // Step 6 — user must click left door
+  {
+      text: `You must be wondering — <em>How do I unlock these items?</em> You will need to interact with your <strong>culture rooms.</strong> Click the left door to enter.`,
+      highlight: "#door-left",
+      page: "room",
+      waitForClick: "#door-left",
+  },
+  // Step 7 — now inside culture 1, click to continue
+  {
+    text: `Welcome to one of your <strong>culture rooms.</strong> Explore this culture by filling this room with Bubbles. <em>Bubbles will unlock furniture and DIY pieces for your SafeRoom.</em>`,
+    highlight: null,
+    page: "culture1",
+  },
+  // Step 8 — user must click + to add a bubble
+  {
+    text: `Press the <strong>+</strong> button below to add your first Bubble now. Freely write about your culture using the suggested topics.`,
+    highlight: "#culture-add-btn",
+    highlightShape: "round",
+    page: "culture1",
+    waitForBubble: true,
+  },
+  // Step 9 — bubble added, explain what writing does
+  {
+    text: `Share special memories, interesting facts, and anything you've uncovered through your own research or conversations with family and friends.<br><br><em>Putting your knowledge into words brings you closer to both sides of who you are.</em>`,
+    highlight: null,
+    page: "culture1",
+    waitForClick: null,
+  },
+  // Step 10 — user must click right door to go to culture 2
+  {
+    text: `Now visit your <strong>second culture room.</strong> Go back to the SafeRoom and click the other door.`,
+    highlight: "#culture-back-btn",
+    page: "culture1",
+    waitForClick: "#culture-back-btn",
+    onLeave: () => { showPage("room"); },
+  },
+  // Step 11 — user must click right door
+  {
+    text: `Now click the <strong>other door</strong> to enter your second culture room.`,
+    highlight: "#door-right",
+    page: "room",
+    waitForClick: "#door-right",
+  },
+  // Step 12 — culture 2, user must add a bubble
+  {
+    text: `Same here — press the <strong>+</strong> button to add a Bubble to this culture room.`,
+    highlight: "#culture-add-btn",
+    highlightShape: "round",
+    page: "culture2",
+    waitForBubble: true,
+  },
+  // Step 13 — done
+  {
+    text: `You're all set! Every Bubble you add unlocks something new in your SafeRoom. Start <strong>exploring</strong> and feel <strong>connected!</strong>`,
+    highlight: null,
+    page: "culture2",
+    waitForClick: null,
+    onLeave: () => { showPage("room"); },
+  },
+];
+
+let tutorialStep   = 0;
+let tutorialActive = false;
+let highlightEls   = [];
+let tutorialClickListeners = [];
+
+function startTutorial() {
+  tutorialActive = true;
+  tutorialStep   = 0;
+  document.getElementById("tutorial-overlay").classList.add("active");
+  showTutorialStep(0);
+}
+
+function showTutorialStep(i) {
+  const step = TUTORIAL_STEPS[i];
+  if (!step) { endTutorial(); return; }
+
+  if (step.onEnter) step.onEnter();
+
+  document.getElementById("tutorial-text").innerHTML = step.text;
+      // Lower tutorial z-index when entry or view modal might be open
+    const box = document.getElementById("tutorial-box");
+    if (step.waitForBubble) {
+      box.style.zIndex = "100";
+    } else {
+      box.style.zIndex = "";
+    }
+
+    clearTutorialHighlights();
+    clearTutorialClickListeners();
+    positionTutorialBox(step);
+
+  setTimeout(() => {
+    if (step.highlight) highlightEl(step.highlight, step.highlightShape);
+    if (step.highlightMultiple) {
+      step.highlightMultiple.forEach(sel => highlightEl(sel, step.highlightShape, true));
+    }
+  }, 350);
+
+
+  // Show/hide the "click to continue" button
+  const nextBtn = document.getElementById("tutorial-next");
+
+  if (step.waitForBubble) {
+    // Hide the continue button — wait for a bubble to be saved
+    nextBtn.style.display = "none";
+    waitForBubble();
+  } else if (step.waitForClick) {
+    // Hide the continue button — wait for the user to click the target
+    nextBtn.style.display = "none";
+    waitForElementClick(step.waitForClick);
+  } else {
+    // Show the continue button normally
+    nextBtn.style.display = "block";
+  }
+}
+
+function positionTutorialBox(step) {
+  const box = document.getElementById("tutorial-box");
+  box.style.left = "50%";
+
+  // Move box to top when on culture room steps so modals and center label are free
+  if (step.page === "culture1" || step.page === "culture2") {
+    box.style.top       = "12%";
+    box.style.transform = "translate(-50%, 0)";
+  } else {
+    box.style.top       = "50%";
+    box.style.transform = "translate(-50%, -50%)";
+  }
+}
+
+function waitForElementClick(selector) {
+  const el = document.querySelector(selector);
+  if (!el) { advanceTutorial(); return; }
+
+  const handler = () => {
+    // Let the element's own click handler fire first
+    setTimeout(() => advanceTutorial(), 400);
+  };
+  el.addEventListener("click", handler, { once: true });
+  tutorialClickListeners.push({ el, handler });
+}
+
+function waitForBubble() {
+  // Poll until a new entry appears
+  const startCount = state.culture1.entries.length + state.culture2.entries.length;
+  const interval = setInterval(() => {
+    const newCount = state.culture1.entries.length + state.culture2.entries.length;
+    if (newCount > startCount) {
+      clearInterval(interval);
+      setTimeout(() => advanceTutorial(), 600);
+    }
+  }, 500);
+  tutorialClickListeners.push({ interval });
+}
+
+function clearTutorialClickListeners() {
+  tutorialClickListeners.forEach(item => {
+    if (item.el && item.handler) item.el.removeEventListener("click", item.handler);
+    if (item.interval) clearInterval(item.interval);
+  });
+  tutorialClickListeners = [];
+}
+
+function highlightEl(selector, shape, multi = false) {
+  const el = document.querySelector(selector);
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const pad  = 8;
+
+  if (multi) {
+    const hl = document.createElement("div");
+    hl.style.cssText = `
+      position:fixed;
+      border-radius:${shape === "round" ? "50%" : "8px"};
+      border:2px solid #1a1008;
+      pointer-events:none;
+      z-index:4999;
+      box-shadow:0 0 0 4px rgba(26,16,8,0.08);
+      animation:tutorialPulse 1.2s ease-in-out infinite;
+      left:${rect.left - pad}px;
+      top:${rect.top - pad}px;
+      width:${rect.width + pad * 2}px;
+      height:${rect.height + pad * 2}px;
+    `;
+    document.body.appendChild(hl);
+    highlightEls.push(hl);
+  } else {
+    const hl = document.getElementById("tutorial-highlight");
+    hl.classList.add("active");
+    if (shape === "round") hl.classList.add("round");
+    else hl.classList.remove("round");
+    hl.style.left   = (rect.left   - pad) + "px";
+    hl.style.top    = (rect.top    - pad) + "px";
+    hl.style.width  = (rect.width  + pad * 2) + "px";
+    hl.style.height = (rect.height + pad * 2) + "px";
+  }
+}
+
+function clearTutorialHighlights() {
+  const main = document.getElementById("tutorial-highlight");
+  if (main) main.classList.remove("active", "round");
+  highlightEls.forEach(el => el.remove());
+  highlightEls = [];
+}
+
+function advanceTutorial() {
+  const step = TUTORIAL_STEPS[tutorialStep];
+  if (step && step.onLeave) step.onLeave();
+  clearTutorialClickListeners();
+  tutorialStep++;
+  if (tutorialStep >= TUTORIAL_STEPS.length) {
+    endTutorial();
+  } else {
+    showTutorialStep(tutorialStep);
+  }
+}
+
+function endTutorial() {
+  tutorialActive = false;
+  clearTutorialHighlights();
+  clearTutorialClickListeners();
+  document.getElementById("tutorial-overlay").classList.remove("active");
+  localStorage.setItem("saferoom_tutorial_done", "1");
+  showPage("room");
+}
+
+function setupTutorial() {
+  document.getElementById("tutorial-next").addEventListener("click", advanceTutorial);
+
+  const done = localStorage.getItem("saferoom_tutorial_done");
+  if (!done) {
+    setTimeout(startTutorial, 600);
+  }
+}
+
+
+
+window.addEventListener("resize", scaleRoom);
+document.fonts.ready.then(scaleRoom);
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+
+async function init() {
+  await initDiyDB();
+  setupInventoryToggle();
+  setupEvents();
+  renderRoom();
+  scaleRoom(); 
+  initDIY();
+  setupTutorial();
+}
+
+init();
+
+</script>
+</body>
+</html>

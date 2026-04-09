@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SafeRoom — Welcome</title>
+<link rel="stylesheet" href="https://use.typekit.net/gsu8slg.css">
+<link rel="stylesheet" href="SafeRoom.css">
+<style>
+
+    font-family: owners, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    font-family: "chauncy-pro", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══════════════════════════════════════
+       SCREEN 0 — LANDING
+  ══════════════════════════════════════ -->
+  <div class="screen active" id="screen-0">
+
+    <div class="landing-graphic">
+      <div class="house-placeholder">
+        <img src="img/landing.jpg" alt="SafeRoom illustration" />
+
+    <div class="landing-door" onclick="goTo(1)">
+
+      <img class="door-closed" src="img/closed-front-door.png" alt="door closed" />
+      <img class="door-open"   src="img/open-front-door.png"   alt="door open" />
+ 
+    </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 0.5 — PRIVACY CONSENT
+══════════════════════════════════════ -->
+<div class="screen" id="screen-consent">
+
+  <div class="consent-box">
+    <div class="consent-title">Before you begin</div>
+    <div class="consent-body">
+      <p>SafeRoom is a personal space to explore and celebrate your cultural identity. You will be asked to share memories, stories, and reflections that are meaningful to you.</p>
+      <p>We want you to feel safe doing so. Here is what you should know:</p>
+      <ul>
+        <li><strong>Your data never leaves your device.</strong> Everything you write is stored locally in your browser — not on any server.</li>
+        <li><strong>We do not collect, transmit, or store your entries.</strong> No one at SafeRoom can read what you write.</li>
+        <li><strong>Your stories are yours.</strong> We will never use your personal information for research, marketing, or any other purpose.</li>
+        <li><strong>Clearing your browser data will erase your SafeRoom.</strong> There is no cloud backup.</li>
+      </ul>
+      <p>This project was created as part of a design thesis. It is not a commercial product and does not operate a backend or database of any kind.</p>
+    </div>
+
+    <label class="consent-check-wrap">
+      <input type="checkbox" id="consent-checkbox" />
+      <span class="consent-check-label">I understand and agree to use SafeRoom knowing my data stays on my device.</span>
+    </label>
+
+    <button class="consent-btn" id="consent-btn" disabled>.𖥔 ݁ ˖  I agree — let's begin  𖥔 ݁ ˖</button>
+  </div>
+
+</div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 1 — NAME YOUR SAFEROOM
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-1">
+
+    <div class="screen-label">Give your SafeRoom a name</div>
+
+    <div class="circle-input-wrap" >
+      <div class="circle-ring" style="width:400px;height:400px">
+        <img class="circle-png" src="img/brown-hole.png" alt="brown hole" />
+        <input
+          id="saferoom-name"
+          type="text"
+          placeholder="Enter name"
+          maxlength="28"
+          oninput="updateNextBtn('next-1')"
+        />
+      </div>
+    </div>
+
+    <button class="next-btn" id="next-1" disabled onclick="goTo(3)">Next</button>
+
+  </div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 2 — WHERE ARE YOU FROM
+══════════════════════════════════════ -->
+<div class="screen" id="screen-2">
+
+  <div class="culture-col">
+    <div class="culture-question">"Where are you from?"</div>
+    <div class="circle-input-wrap">
+      <div class="circle-ring" style="width:400px;height:400px">
+               <img class="circle-png" src="img/brown-hole.png" alt="brown hole" />
+        <input
+          id="culture1-name"
+          type="text"
+          placeholder="Enter Name"
+          maxlength="24"
+          oninput="updateNextBtn('next-2')"
+          style="width:150px"
+        />
+      </div>
+    </div>
+    <div class="culture-sub">[The culture you've assimilated to / live in]</div>
+  </div>
+
+  <button class="next-btn" id="next-2" disabled onclick="goTo(4)" style="margin-top:40px">Next</button>
+
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SCREEN 3 — WHERE ARE YOU REALLY FROM
+══════════════════════════════════════ -->
+<div class="screen" id="screen-3">
+
+  <div class="culture-col">
+    <div class="culture-question">"No, where are you <em>really</em> from?"</div>
+    <div class="circle-input-wrap">
+      <div class="circle-ring" style="width:400px;height:400px">
+               <img class="circle-png" src="img/brown-hole.png" alt="brown hole" />
+        <input
+          id="culture2-name"
+          type="text"
+          placeholder="Enter Name"
+          maxlength="24"
+          oninput="updateNextBtn('next-3')"
+          style="width:150px"
+        />
+      </div>
+    </div>
+    <div class="culture-sub">[The culture of your family / ancestors]</div>
+  </div>
+
+  <button class="next-btn" id="next-3" disabled onclick="goTo(5)" style="margin-top:40px">Next</button>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 4 — COLOUR DUO
+══════════════════════════════════════ -->
+<div class="screen" id="screen-4">
+
+  <div class="screen-label">Choose a colour duo</div>
+  <div class="screen-label-2">each colour will represent a culture of your hybridity</div>
+
+  <div class="colour-duo-grid" id="colour-grid">
+    <div class="colour-option" data-duo="blue-yellow" data-colors='["#4a7ab8","#f7c948"]' onclick="selectColour(this)">
+      <div class="colour-object">
+        <div class="colour-object-placeholder"><img src="B-Y/decor/B-Ymug2.png"></div>
+      </div>
+      <div class="colour-label">blue + yellow</div>
+    </div>
+    <div class="colour-option" data-duo="blue-red" data-colors='["#4a7ab8","#c94a4a"]' onclick="selectColour(this)">
+      <div class="colour-object">
+        <div class="colour-object-placeholder"><img src="B-R/decor/plant/B-Rplant1.png"></div>
+      </div>
+      <div class="colour-label">blue + red</div>
+    </div>
+    <div class="colour-option" data-duo="blue-green" data-colors='["#4a7ab8","#4a9e5c"]' onclick="selectColour(this)">
+      <div class="colour-object">
+        <div class="colour-object-placeholder"><img src="B-G/decor/B-Gmug1.png"></div>
+      </div>
+      <div class="colour-label">blue + green</div>
+    </div>
+    <div class="colour-option" data-duo="red-yellow" data-colors='["#c94a4a","#f7c948"]' onclick="selectColour(this)">
+      <div class="colour-object">
+        <div class="colour-object-placeholder"><img src="R-Y/decor/lighting/R-Ylamp2.png"></div>
+      </div>
+      <div class="colour-label">red + yellow</div>
+    </div>
+    <div class="colour-option" data-duo="red-green" data-colors='["#c94a4a","#4a9e5c"]' onclick="selectColour(this)">
+      <div class="colour-object">
+        <div class="colour-object-placeholder"><img src="G-R/decor/plant/G-Rplant3.png"></div>
+      </div>
+      <div class="colour-label">red + green</div>
+    </div>
+  </div>
+
+  <button class="next-btn" id="next-4" disabled onclick="enterRoom()" style="margin-top:8px">Next</button>
+
+</div>
+
+
+  <!-- ── BACK ARROW ── -->
+  <div class="nav-left hidden" id="nav-left" onclick="goBack()">‹ Back</div>
+
+  <!-- ── PROGRESS DOTS ── -->
+  <div id="progress">
+  <div class="dot active" data-i="0"></div>
+  <div class="dot"        data-i="1"></div>
+  <div class="dot"        data-i="2"></div>
+  <div class="dot"        data-i="3"></div>
+  <div class="dot"        data-i="4"></div>
+  <div class="dot"        data-i="5"></div>
+  </div>
+
+</div><!-- /#app -->
+
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+
+const state = {
+  saferoomName: "",
+  culture1:     "",
+  culture2:     "",
+  colorDuo:     null,  // { duo, colors: [c1, c2] }
+};
+
+let currentScreen = 0;
+const TOTAL = 6; 
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+
+function goTo(n) {
+  if (n < 0 || n >= TOTAL) return;
+
+  // Map step number to screen ID
+  const screenIds = ["screen-0", "screen-consent", "screen-1", "screen-2", "screen-3", "screen-4"];
+
+  document.getElementById(screenIds[currentScreen]).classList.remove("active");
+  currentScreen = n;
+  document.getElementById(screenIds[currentScreen]).classList.add("active");
+  updateNav();
+  updateDots();
+}
+
+function goBack() { goTo(currentScreen - 1); }
+
+function updateNav() {
+  document.getElementById("nav-left").classList.toggle("hidden", currentScreen === 0);
+}
+
+function updateDots() {
+  document.querySelectorAll(".dot").forEach(d => {
+    d.classList.toggle("active", parseInt(d.dataset.i) === currentScreen);
+  });
+}
+
+document.getElementById("consent-checkbox").addEventListener("change", function() {
+  document.getElementById("consent-btn").disabled = !this.checked;
+});
+
+document.getElementById("consent-btn").addEventListener("click", () => {
+  if (document.getElementById("consent-checkbox").checked) goTo(2);
+});
+// ══════════════════════════════════════════
+// FORM VALIDATION
+// ══════════════════════════════════════════
+
+function updateNextBtn(btnId) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  let valid = false;
+  if (btnId === "next-1") {
+    valid = document.getElementById("saferoom-name").value.trim().length > 0;
+  } else if (btnId === "next-2") {
+    valid = document.getElementById("culture1-name").value.trim().length > 0;
+  } else if (btnId === "next-3") {
+    valid = document.getElementById("culture2-name").value.trim().length > 0;
+  }
+  btn.disabled = !valid;
+}
+
+
+function selectColour(el) {
+  document.querySelectorAll(".colour-option").forEach(o => o.classList.remove("selected"));
+  el.classList.add("selected");
+  state.colorDuo = {
+    duo:    el.dataset.duo,
+    colors: JSON.parse(el.dataset.colors),
+  };
+  document.getElementById("next-4").disabled = false;
+}
+
+// ══════════════════════════════════════════
+// SUBMIT — save to localStorage and go to main app
+// ══════════════════════════════════════════
+
+function enterRoom() {
+  const data = {
+    saferoomName: document.getElementById("saferoom-name").value.trim() || "My SafeRoom",
+    culture1Name: document.getElementById("culture1-name").value.trim() || "Culture 1",
+    culture2Name: document.getElementById("culture2-name").value.trim() || "Culture 2",
+    colors:       state.colorDuo ? state.colorDuo.colors : ["#e05a8a", "#5c7eb8"],
+    furnitureSet: state.colorDuo ? state.colorDuo.duo : "blue-yellow",
+  };
+  // Save onboarding answers
+  localStorage.setItem("saferoom_onboarding", JSON.stringify(data));
+  // Wipe the main app state so it rebuilds fresh from onboarding data
+  localStorage.removeItem("saferoom_v8");
+  window.location.href = "SafeRoom.html";
+}
+
+// ══════════════════════════════════════════
+// KEYBOARD SUPPORT
+// ══════════════════════════════════════════
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { goBack(); return; }
+
+  if (e.key === "Enter" || e.key === "ArrowRight") {
+    if (currentScreen === 0) { goTo(1); return; }
+    // Screen 1 is consent — handled by its own button
+    if (currentScreen === 2) {
+      const btn = document.getElementById("next-1");
+      if (!btn.disabled) goTo(3);
+      return;
+    }
+    if (currentScreen === 3) {
+      const btn = document.getElementById("next-2");
+      if (!btn.disabled) goTo(4);
+      return;
+    }
+    if (currentScreen === 4) {
+      const btn = document.getElementById("next-3");
+      if (!btn.disabled) goTo(5);
+      return;
+    }
+    if (currentScreen === 5) {
+      const btn = document.getElementById("next-4");
+      if (!btn.disabled) enterRoom();
+      return;
+    }
+  }
+
+  if (e.key === "ArrowLeft" && currentScreen > 0) {
+    goBack();
+  }
+});
+
+// ── Init ──
+updateNav();
+updateDots();
+</script>
+</body>
+</html>
