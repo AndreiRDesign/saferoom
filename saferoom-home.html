@@ -1794,14 +1794,14 @@ if (newTotal > prevTotal) {
   });
 
   // Canvas resize observer for culture room
-  const resizeObserver = new ResizeObserver(() => {
-    if (currentPage !== "room") {
-      const canvas = document.getElementById("culture-canvas");
-      canvasDims = { w: canvas.offsetWidth || 800, h: canvas.offsetHeight || 600 };
-      renderBubbles(activeCulture);
-    }
-  });
-  resizeObserver.observe(document.getElementById("culture-canvas"));
+    const resizeObserver = new ResizeObserver(() => {
+      if (currentPage !== "room") {
+        const canvas = document.getElementById("culture-canvas");
+        canvasDims = { w: canvas.offsetWidth || 800, h: canvas.offsetHeight || 600 };
+        renderCultureRoom(activeCulture);
+      }
+    });
+    resizeObserver.observe(document.getElementById("culture-canvas"));
 }
 
 // ══════════════════════════════════════════
