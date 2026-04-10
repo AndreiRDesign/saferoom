@@ -1266,9 +1266,8 @@ input  { font-family: inherit; border: none; background: none; outline: none; }
 /* ── DOOR ANIMATION ── */
 .landing-door {
   position: absolute;
-  /* Adjust these to position the door over your illustration */
   left: 27%;
-  top: 438px;
+  top: 46.5%;
   width: 130px;
   height: 250px;
   cursor: pointer;
