@@ -925,9 +925,9 @@
     border-radius: 50%; pointer-events: none; animation: pulseGlow 5s ease-in-out infinite;
   }
   #culture-center-label {
-    position: absolute; left: 50%; top: 430px; transform: translate(-50%,-50%);
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
     text-align: center; z-index: 20; pointer-events: none;
-    font-family: 'chauncy-pro', sans-serif; font-weight: 700; letter-spacing: 1px;
+    font-family: 'chauncy-pro', sans-serif; font-weight: 700; letter-spacing: 1px; white-space: nowrap;
   }
   #culture-add-btn-wrap {
     position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 20;
