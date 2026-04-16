@@ -181,7 +181,17 @@
     z-index: 20; pointer-events: none;
 
   }
+@keyframes btnBounce {
+  0%   { transform: translateY(0); }
+  25%  { transform: translateY(-8px); }
+  50%  { transform: translateY(0); }
+  70%  { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
 
+#next-4.bounce {
+  animation: btnBounce 0.5s ease !important;
+}
 
   /* ── FURNITURE ITEMS ── */
   .furniture-item {
