@@ -2160,7 +2160,15 @@ const TUTORIAL_STEPS = [
   {
     text: `Welcome to one of your <strong>culture rooms.</strong> Explore this culture by filling this room with Bubbles. <em>Bubbles will unlock furniture and DIY pieces for your SafeRoom.</em>`,
     highlight: null,
-    page: "culture1",
+  page: "culture1",
+  onEnter: () => {
+    document.getElementById("culture-add-btn").style.pointerEvents = "none";
+    document.getElementById("culture-add-btn").style.opacity = "0.4";
+  },
+  onLeave: () => {
+    document.getElementById("culture-add-btn").style.pointerEvents = "all";
+    document.getElementById("culture-add-btn").style.opacity = "1";
+  },
   },
   // Step 8 — user must click + to add a bubble
   {
